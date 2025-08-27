@@ -130,7 +130,7 @@ The client’s current process is managed through a large Excel workbook that tr
 ---
 
 ## Team
-- **Project Manager / Client Liaison**: TBD
+- **Team Lead**: Adam Graves
 - **Backend Lead**: TBD
 - **Frontend Lead**: TBD
 - **QA & Documentation Lead**: TBD
@@ -154,6 +154,61 @@ The client’s current process is managed through a large Excel workbook that tr
 - **Version Control**: GitHub with branching & pull requests.  
 - ~~**Task Tracking**: GitHub Projects.~~  
 - **Communication**: Discord.  
+
+---
+
+## Setup
+
+### 1. Clone the repository
+```
+git clone https://github.com/Giriid/CMPS_411.git
+cd cmps_411
+```
+
+### 2. Create and activate a virtual environment
+```
+python -m venv venv
+venv\Scripts\activate
+```
+
+### 3. Install dependencies
+```
+pip install -r requirements.txt
+```
+
+### 4. Configure environment variables
+1. Copy the example file
+    ```
+    cd backend
+    cp .env.example .env
+    ```
+2. Edit ``` .env ``` and update your PostgreSQL password ('``` YOUR_PASSWORD ```')
+    ```
+    DATABASE_URL=postgresql+psycopg2://postgres:YOUR_PASSWORD@localhost:5432/scheduler_db
+    ```
+
+### 5. Start PostgreSQL and create the database if it doesn't exist
+Using ``` pgAdmin ``` or ``` SQL Shell (psql) ```
+``` SQL
+sql
+
+CREATE DATABASE scheduler_db;
+```
+
+### 6. Seed/Reset the database with test data
+```
+python reset_db.py
+```
+
+### 7. Run the API
+```
+uvicorn main:app --reload
+```
+
+The API will now be available at:
+- root: https://127.0.0.1:8000/
+- Swagger UI: https://127.0.0.1:8000/docs
+- ReDoc: https://127.0.0.1:8000/redoc
 
 ---
 
