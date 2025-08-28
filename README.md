@@ -1,5 +1,5 @@
 # Course Scheduling Application
- Austin (test) just want to make sure my stuff is working.
+
 ## Overview
 This project aims to replace the current Excel-based scheduling system with a web application for managing course schedules. The system will allow department administrators to assign credit hours, meeting times, instructors, and rooms while automatically checking for conflicts. It will also provide calendar-based views for easier visualization of schedules, as well as instructor and room availability charts.
 
@@ -202,13 +202,13 @@ python reset_db.py
 
 ### 7. Run the API
 ```
-uvicorn main:app --reload
+uvicorn app.main:app --reload
 ```
 
 The API will now be available at:
-- root: https://127.0.0.1:8000/
-- Swagger UI: https://127.0.0.1:8000/docs
-- ReDoc: https://127.0.0.1:8000/redoc
+- root: http://127.0.0.1:8000/
+- Swagger UI: http://127.0.0.1:8000/docs
+- ReDoc: http://127.0.0.1:8000/redoc
 
 ---
 
