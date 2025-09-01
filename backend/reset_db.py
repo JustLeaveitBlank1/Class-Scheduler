@@ -13,20 +13,40 @@ def seed_database():
     db = SessionLocal()
     try:
         # Sample instructors
-        instr1 = models.Instructor(name="Dr. Smith", max_load=15)
-        instr2 = models.Instructor(name="Dr. Johnson", max_load=15)
+        instr1 = models.Instructor(
+            name="John Smith",
+            email="john.smith@example.edu",
+            department="MATH",
+            max_load=15
+            )
+        instr2 = models.Instructor(
+            name="Will Johnson",
+            email="will.johnson@example.edu",
+            department="CMPS",
+            max_load=15
+            )
 
         # Sample rooms
         room1 = models.Room(name="PH211", capacity=30)
         room2 = models.Room(name="SBA234", capacity=25, constraints="no power")
 
         # Sample meeting times
-        mt1 = models.MeetingTime(code="1400TU", description="Tue/Thu 2:00 - 3:15 PM")
-        mt2 = models.MeetingTime(code="900MWF", description="Mon/Wed/Fri 9:00 - 9:50 AM")
+        mt1 = models.MeetingTime(day_of_week="M/W", start_time="09:30", end_time="10:45")
+        mt2 = models.MeetingTime(day_of_week="T/Th", start_time="12:30", end_time="13:45")
 
         # Sample courses
-        course1 = models.Course(name="CHEM 1010", credit_hours=3, contact_hours=3)
-        course2 = models.Course(name="PHYS 2010", credit_hours=4, contact_hours=5)
+        course1 = models.Course(
+            code="CH1010",
+            name="CHEM 1010",
+            credit_hours=3,
+            contact_hours=3
+            )
+        course2 = models.Course(
+            code="PH2010",
+            name="PHYS 2010",
+            credit_hours=4,
+            contact_hours=5
+            )
 
         # Add and commit
         db.add_all([instr1, instr2, room1, room2, mt1, mt2, course1, course2])

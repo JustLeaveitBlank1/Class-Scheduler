@@ -13,7 +13,7 @@ def get_db():
 
 @router.post("/")
 def create_assignment(course_id: int, instructor_id: int, room_id: int, meeting_time_id: int, db: Session = Depends(get_db)):
-    assignment = models.Assignment(
+    assignment = models.Section(
         course_id=course_id,
         instructor_id=instructor_id,
         room_id=room_id,

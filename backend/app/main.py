@@ -1,14 +1,14 @@
 from fastapi import FastAPI
-from app.api import courses, instructors, assignments
 from datetime import datetime
 from sqlalchemy import text
 from app.db.database import SessionLocal
+from app.routes import course, instructor, meeting_time
 
 app = FastAPI()
 
-app.include_router(courses.router)
-app.include_router(instructors.router)
-app.include_router(assignments.router)
+app.include_router(course.router)
+app.include_router(instructor.router)
+app.include_router(meeting_time.router)
 
 # Home
 @app.get("/")

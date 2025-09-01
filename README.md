@@ -205,10 +205,11 @@ python reset_db.py
 uvicorn app.main:app --reload
 ```
 
-The API will now be available at:
+The API will now be available at the endpoints:
 - root: http://127.0.0.1:8000/
 - Swagger UI: http://127.0.0.1:8000/docs
 - ReDoc: http://127.0.0.1:8000/redoc
+- Health Check: http://127.0.0.1:8000/health
 
 ---
 
