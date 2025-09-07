@@ -1,68 +1,114 @@
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@import "tailwindcss/preflight";
+@import "tailwindcss/utilities";
+/* === Global defaults === */
+html, body, #root {
+  height: 100vmax;
+  width: 100vmax;
 }
-
-a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
-
+/* Body styles using direct CSS values */
 body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 320px;
-  min-height: 100vh;
+  background-color: #3B3B3B;
+  color: #e5e2e2;
+  -webkit-font-smoothing: antialiased;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
-
 h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
+  justify-self: center;
+  background-color: #0B2213;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 800px;
+  text-align: center;
+  text-indent: 1em;
+  border: 2px solid #FFC837;
+  margin-bottom: 20px;
+  margin-top: 20px;
 }
-
-button {
+a {
+  transition: color 0.2s;
+  margin-bottom: 20px;
+}
+a img {
+  width: 20px;
+  height: 20px;
+}
+.dash {
+  width: 75%;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 40px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: #16171C;
+  background-position: auto;
+  display: stretch;
+  justify-content: flex;
+  color: #fff;
+  border-radius: 10px;
+  border: 2px ridge #6877D8;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.card-list {
+  list-style-type: none;
+  list-style-position: inside;
+  padding: 0;
+}
+.card {
+  width: 57%;
   border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+  padding: 20px;
+  margin-left: auto;
+  margin-right: auto;
   background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
+  background-position: auto;
+  justify-content: auto;
+  color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-button:hover {
-  border-color: #646cff;
+.card-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
 }
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+.card-description {
+  font-size: 16px;
+  margin-bottom: 10px;
 }
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* Bubbly link/button component */
+.bubbly-link {
+  display: flex;
+  justify-content: center;
+  justify-items: center;
+  padding: 0.2rem 1rem;
+  border: 3.14px ridge rgba(59, 68, 75, 0.623);
+  border-radius: 5rem;
+  font-weight: 1000;
+  font-size:x-large;
+  color: rgba(255, 255, 255, 0.8);
+  background-color: #085FAE;
+  box-shadow: 5 4px 6px rgba(19, 19, 19, 0.329);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.bubbly-link:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+.bubbly-link:active {
+  transform: scale(0.95);
+}
+.caption {
+  justify-self: center;
+  background-color: #533D38;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 800px;
+  text-align: left;
+  text-indent: 1em;
+  border: 2px solid #52241A;
 }
