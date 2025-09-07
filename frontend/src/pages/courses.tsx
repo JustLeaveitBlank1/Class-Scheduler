@@ -1,0 +1,52 @@
+import { useQuery } from "@tanstack/react-query";
+
+type Course = {
+    id: number;
+    code: string;
+    name: string;
+    credit_hours: number;
+    contact_hours: number;
+};
+
+const fetchCourses = async (): Promise<Course[]> => {
+    const res = await fetch("http://localhost:8000/api/courses"); // adjust to backend URL
+    if (!res.ok) throw new Error("Failed to fetch courses");
+    return res.json();
+};
+
+const Courses: React.FC = () => {
+    const { data, isLoading, isError, error } = useQuery<Course[], Error>({
+        queryKey: ["courses"],
+        queryFn: fetchCourses,
+    });
+
+    if (isLoading) return <p>Loading courses...</p>;
+    if (isError) return <p>Error: {error.message}</p>;
+
+    return (
+        <div>
+            <h1>
+                Courses
+            </h1>
+            <ul>
+                {data?.map((course) => (
+                    <li 
+                        key={course.id}
+                        className="card"
+                    >
+                        <h2>
+                            {course.name}
+                            {course.code}
+                        </h2>
+                        <p>
+                            credits: {course.credit_hours}
+                            time: {course.contact_hours}
+                        </p>
+                    </li>
+                ))}
+            </ul>
+        </div>
+    );
+};
+
+export default Courses;
