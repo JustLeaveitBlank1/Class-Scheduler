@@ -3,11 +3,11 @@ import BubblyLink from "../components/BubblyLink";
 
 const Home: React.FC = () => {
     return (
-        <div className="a"
+        <body
             style={{
                 backgroundImage: "url('../public/IMG00.png')",
                 backgroundRepeat: "no-repeat",
-                backgroundSize: "2200px 1600px",
+                backgroundSize: "cover",
                 backgroundPosition: "center",
             }}
         >
@@ -47,7 +47,7 @@ const Home: React.FC = () => {
                     Manage courses, instructors, and rooms all in one place.
                 </p>
             </div>
-        </div>
+        </body>
     );
 };
 

@@ -13,7 +13,7 @@ const fetchCourses = async (): Promise<Course[]> => {
     if (!res.ok) throw new Error("Failed to fetch courses");
     return res.json();
 };
-
+ 
 const Courses: React.FC = () => {
     const { data, isLoading, isError, error } = useQuery<Course[], Error>({
         queryKey: ["courses"],
@@ -28,20 +28,22 @@ const Courses: React.FC = () => {
             <h1>
                 Courses
             </h1>
-            <ul>
+            <ul className="card-list">
                 {data?.map((course) => (
                     <li 
                         key={course.id}
                         className="card"
                     >
-                        <h2>
-                            {course.name}
-                            {course.code}
-                        </h2>
-                        <p>
-                            credits: {course.credit_hours}
-                            time: {course.contact_hours}
-                        </p>
+                        <div className="card-content">
+                            <h2>
+                                {course.name}
+                                {course.code}
+                            </h2>
+                            <p>
+                                credits: {course.credit_hours}
+                                time: {course.contact_hours}
+                            </p>
+                        </div>
                     </li>
                 ))}
             </ul>
