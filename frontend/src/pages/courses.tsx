@@ -9,11 +9,13 @@ type Course = {
 };
 
 const fetchCourses = async (): Promise<Course[]> => {
-    const res = await fetch("http://localhost:8000/api/courses"); // adjust to backend URL
-    if (!res.ok) throw new Error("Failed to fetch courses");
+    const res = await fetch("http://localhost:8001/api/courses"); // use correct port
+    if (!res.ok) {
+        throw new Error(`Failed to fetch courses: ${res.status} ${res.statusText}`);
+    }
     return res.json();
 };
- 
+
 const Courses: React.FC = () => {
     const { data, isLoading, isError, error } = useQuery<Course[], Error>({
         queryKey: ["courses"],

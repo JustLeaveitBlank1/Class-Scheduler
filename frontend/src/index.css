@@ -4,14 +4,25 @@
 html, body, #root {
   height: 100vmax;
   width: 100vmax;
+  background-size: cover;
+  background-color: #176d83;
 }
 /* Body styles using direct CSS values */
 body {
-  background-color: #3B3B3B;
   color: #e5e2e2;
   -webkit-font-smoothing: antialiased;
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+}
+.home {
+  
+  height: 100vmax;
+  background-size: cover;
+  font-family: "Times New Roman", Times, serif;
+  background-color: #414141;
+  background-image: url('../public/IMG00.png');
+  background-position: center;
+  background-repeat: no-repeat;
 }
 h1 {
   justify-self: center;

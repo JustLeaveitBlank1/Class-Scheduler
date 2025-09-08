@@ -3,14 +3,7 @@ import BubblyLink from "../components/BubblyLink";
 
 const Home: React.FC = () => {
     return (
-        <body
-            style={{
-                backgroundImage: "url('../public/IMG00.png')",
-                backgroundRepeat: "no-repeat",
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
-        >
+        <div className="home">
             {/* header */}
             <h1 className="text-4xl font-extrabold text-indigo-700 mb-4">
                     Schedulith: course scheduling app.
@@ -47,7 +40,7 @@ const Home: React.FC = () => {
                     Manage courses, instructors, and rooms all in one place.
                 </p>
             </div>
-        </body>
+        </div>
     );
 };
 
