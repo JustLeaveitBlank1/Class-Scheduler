@@ -23,7 +23,6 @@ class CourseUpdate(CourseBase):
 # Response (e.g., when reading from DB)
 class CourseRead(CourseBase):
     id: int
-
     class Config:
         orm_mode = True
 
@@ -42,7 +41,6 @@ class InstructorUpdate(InstructorBase):
 
 class InstructorRead(InstructorBase):
     id: int
-
     class Config:
         orm_mode = True
 
@@ -60,6 +58,21 @@ class MeetingTimeUpdate(MeetingTimeBase):
 
 class MeetingTimeRead(MeetingTimeBase):
     id: int
+    class Config:
+        orm_mode = True
 
+# Room ----------------------------------        
+class RoomBase(BaseModel):
+    room_number: str
+    capacity: int
+    
+class RoomCreate(RoomBase):
+    pass
+
+class RoomUpdate(RoomBase):
+    pass
+
+class RoomRead(RoomBase):
+    id: int
     class Config:
         orm_mode = True

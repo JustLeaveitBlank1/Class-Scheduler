@@ -58,3 +58,14 @@ class Section(Base):
     instructor = relationship("Instructor", back_populates="section")
     room = relationship("Room", back_populates="section")
     meeting_time = relationship("MeetingTime", back_populates="section")
+    conflicts = relationship("Conflict", back_populates="section")
+    
+class Conflict(Base):
+    __tablename__ = "conflicts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    section_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
+    conflict_type = Column(String, nullable=False)
+    description = Column(String)
+    
+    section = relationship("Section", back_populates="conflict")
