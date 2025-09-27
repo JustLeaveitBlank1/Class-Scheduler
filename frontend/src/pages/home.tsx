@@ -1,6 +1,5 @@
-import React from "react";
-import BubblyLink from "../components/BubblyLink";
-
+import React from 'react'
+import BubblyLink from '../components/BubblyLink'
 const Home: React.FC = () => {
     return (
         <div className="home">
@@ -43,5 +42,4 @@ const Home: React.FC = () => {
         </div>
     );
 };
-
 export default Home;
