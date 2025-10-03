@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 from app.db import models, schemas
 
-def get_courses(db: Session, skip: int = 0, limit: int = 100):
+def get_courses(db: Session, skip: int=0, limit: int=100):
     return db.query(models.Course).offset(skip).limit(limit).all()
 
 def get_course(db: Session, course_id: int):

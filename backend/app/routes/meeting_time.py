@@ -24,7 +24,7 @@ def read_meeting_time(meeting_time_id: int, db: Session=Depends(get_db)):
         raise HTTPException(status_code=404, detail="Meeting time not found")
     return db_mt
 
-@router.post("/", response_mode=schemas.MeetingTimeRead)
+@router.post("/", response_model=schemas.MeetingTimeRead)
 def create_meeting_time(meeting_time: schemas.MeetingTimeCreate, db: Session=Depends(get_db)):
     return mt_crud.create_meeting_time(db, meeting_time)
 
@@ -39,5 +39,5 @@ def update_meeting_time(meeting_time_id: int, meeting_time: schemas.MeetingTimeU
 def delete_meeting_time(meeting_time_id: int, db: Session=Depends(get_db)):
     db_mt = mt_crud.delete_meeting_time(db, meeting_time_id)
     if not db_mt:
-        raise HTTPException(status_code=404, response_model=schemas.MeetingTimeRead)
+        raise HTTPException(status_code=404, detail="Meeting time not found")
     return db_mt

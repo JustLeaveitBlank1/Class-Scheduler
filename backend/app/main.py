@@ -2,13 +2,16 @@ from fastapi import FastAPI
 from datetime import datetime
 from sqlalchemy import text
 from app.db.database import SessionLocal
-from app.routes import course, instructor, meeting_time
+from app.routes import course, instructor, meeting_time, room, section, conflict
 
 app = FastAPI()
 
 app.include_router(course.router)
 app.include_router(instructor.router)
 app.include_router(meeting_time.router)
+app.include_router(room.router)
+app.include_router(section.router)
+app.include_router(conflict.router)
 
 # Home
 @app.get("/")

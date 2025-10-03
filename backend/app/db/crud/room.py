@@ -1,43 +1,31 @@
-from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from app.db.database import SessionLocal
-from app.db import schemas
-from app.db.crud import room as room_crud
+from app.db import models, schemas
 
-router = APIRouter(prefix="/rooms", tags=["Rooms"])
+def get_rooms(db: Session, skip: int=0, limit: int=100):
+    return db.query(models.Room).offset(skip).limit(limit).all()
 
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-        
-@router.get("/", response_model=list[schemas.RoomRead])
-def read_rooms(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    return room_crud.get_rooms(db, skip=skip, limit=limit)
+def get_room(db: Session, room_id: int):
+    return db.query(models.Room).filter(models.Room.id == room_id).first()
 
-@router.get("/{room_id}", response_model=schemas.RoomRead)
-def read_room(room_id: int, db: Session = Depends(get_db)):
-    db_room = room_crud.get_room(db, room_id)
-    if not db_room:
-        raise HTTPException(status_code=404, detail="Room not found")
+def create_room(db: Session, room: schemas.RoomCreate):
+    db_room = models.Room(**room.model_dump())
+    db.add(db_room)
+    db.commit()
+    db.refresh(db_room)
     return db_room
 
-@router.post("/", response_model=schemas.RoomRead)
-def create_room(room: schemas.RoomCreate, db: Session = Depends(get_db)):
-    return room_crud.create_room(db, room)
-
-@router.put("/{room_id}", response_model=schemas.RoomRead)
-def update_room(room_id: int, room: schemas.RoomUpdate, db: Session = Depends(get_db)):
-    db_room = room_crud.update_room(db, room_id, room)
-    if not db_room:
-        raise HTTPException(status_code=404, detail="Room not found")
+def update_room(db: Session, room_id: int, room: schemas.RoomUpdate):
+    db_room = get_room(db, room_id)
+    if db_room:
+        for key, value in room.model_dump().items():
+            setattr(db_room, key, value)
+        db.commit()
+        db.refresh(db_room)
     return db_room
 
-@router.delete("{room_id}", response_model=schemas.RoomRead)
-def delete_room(room_id: int, db: Session = Depends(get_db)):
-    db_room = room_crud.delete_room(db, room_id)
-    if not db_room:
-        raise HTTPException(status_code=404, detail="Room not found")
+def delete_room(db: Session, room_id: int):
+    db_room = get_room(db, room_id)
+    if db_room:
+        db.delete(db_room)
+        db.commit()
     return db_room
