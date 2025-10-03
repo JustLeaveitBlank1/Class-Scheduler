@@ -2,6 +2,7 @@
 from sqlalchemy import text
 from app.db.database import Base, engine, SessionLocal
 from app.db import models
+from app.services.utils import recalc_instructor_load
 
 def reset_database():
     print("Dropping existing tables...")
@@ -14,7 +15,7 @@ def seed_database():
     print("Seeding database with test data...")
     db = SessionLocal()
     i = 1
-    max_i = 8
+    max_i = 9
     try:
         i = load_bar(i, max_i)
         # -------- Instructors --------
@@ -79,7 +80,6 @@ def seed_database():
         ]
 
         i = load_bar(i, max_i)
-
         for code, iname, rname, (d, st, en) in sections:
             db.add(models.Section(
                 course_id       = crs_ids[code],
@@ -87,6 +87,12 @@ def seed_database():
                 room_id         = room_ids[rname],
                 meeting_time_id = mt_ids[(d, st, en)],
             ))
+
+        db.commit()
+
+        i = load_bar(i, max_i)
+        for inst in db.query(models.Instructor).all():
+            recalc_instructor_load(db, inst.id)
         
         load_bar(i, max_i)
 
@@ -115,3 +121,10 @@ def load_bar(i, max_i):
 if __name__ == "__main__":
     reset_database()
     seed_database()
+
+    # --- DEBUG ---
+    #db = SessionLocal()
+    #print("\nInstructor Workloads After Seeding:")
+    #for inst in db.query(models.Instructor).all():
+    #    print(f"ID={inst.id}, Name={inst.name}, Current Load={inst.current_load}, Max Load={inst.max_load}")
+    #db.close()

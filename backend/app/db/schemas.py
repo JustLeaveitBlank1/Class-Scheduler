@@ -48,6 +48,7 @@ class InstructorUpdate(BaseModel):
 class InstructorRead(InstructorBase):
     id: int
     current_load: int
+    is_overloaded: bool
     class Config:
         orm_mode = True
 

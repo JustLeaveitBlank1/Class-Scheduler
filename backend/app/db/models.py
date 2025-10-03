@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 from .database import Base
 
 class Course(Base):
@@ -22,8 +23,12 @@ class Instructor(Base):
     department = Column(String, nullable=True)
     max_load = Column(Integer, default=15) # default workload requirement
     current_load = Column(Integer, default=0)
-
+    
     sections = relationship("Section", back_populates="instructor")
+
+    @hybrid_property
+    def is_overloaded(self):
+        return self.current_load > self.max_load
 
 class Room(Base):
     __tablename__ = "rooms"
