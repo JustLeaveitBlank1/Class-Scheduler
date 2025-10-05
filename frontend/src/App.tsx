@@ -1,6 +1,6 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "./pages/home";
-import Courses from "./pages/courses";
+import Courses from "./pages/Courses";
 function App() {
     return (
         <Routes>

@@ -3,8 +3,10 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import '../index.css'
 import Home from '../pages/home'
 import { NotFound } from '../pages/not-found'
-import CoursesPage from '../pages/courses'
+import CoursesPage from '../pages/Courses'
 import SchedulePage from '../pages/Schedule'
+import InstructorsPage from '../pages/Instructors'
+import RoomsPage from '../pages/Rooms'
 export const App = () => {
     return (
         <Router><Routes>
