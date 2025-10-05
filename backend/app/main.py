@@ -3,7 +3,7 @@ from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 from app.db.database import SessionLocal
-from app.routes import course, instructor, meeting_time
+from app.routes import course, instructor, meeting_time, room, section, conflict
 
 app = FastAPI()
 
@@ -24,6 +24,9 @@ app.add_middleware(
 app.include_router(course.router)
 app.include_router(instructor.router)
 app.include_router(meeting_time.router)
+app.include_router(room.router)
+app.include_router(section.router)
+app.include_router(conflict.router)
 
 # Home
 @app.get("/")

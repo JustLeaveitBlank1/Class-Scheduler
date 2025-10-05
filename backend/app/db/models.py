@@ -1,5 +1,6 @@
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship
+from sqlalchemy.ext.hybrid import hybrid_property
 from .database import Base
 
 class Course(Base):
@@ -11,7 +12,7 @@ class Course(Base):
     credit_hours = Column(Integer, nullable=False)
     contact_hours = Column(Integer, nullable=False)
 
-    section = relationship("Section", back_populates="course")
+    sections = relationship("Section", back_populates="course")
 
 class Instructor(Base):
     __tablename__ = "instructors"
@@ -22,8 +23,12 @@ class Instructor(Base):
     department = Column(String, nullable=True)
     max_load = Column(Integer, default=15) # default workload requirement
     current_load = Column(Integer, default=0)
+    
+    sections = relationship("Section", back_populates="instructor")
 
-    section = relationship("Section", back_populates="instructor")
+    @hybrid_property
+    def is_overloaded(self):
+        return self.current_load > self.max_load
 
 class Room(Base):
     __tablename__ = "rooms"
@@ -33,17 +38,17 @@ class Room(Base):
     capacity = Column(Integer, nullable=False)
     constraints = Column(String) # e.g., "no power", "lab space"
 
-    section = relationship("Section", back_populates="room")
+    sections = relationship("Section", back_populates="room")
 
 class MeetingTime(Base):
     __tablename__ = "meeting_times"
 
     id = Column(Integer, primary_key=True, index=True)
-    day_of_week = Column(String, unique=True, nullable=False) # e.g., 1400TU
+    day_of_week = Column(String, nullable=False) # e.g., 1400TU
     start_time = Column(String, nullable=False) # e.g., "Tue/Thu 2:00-3:15 PM"
     end_time = Column(String, nullable=False)
 
-    section = relationship("Section", back_populates="meeting_time")
+    sections = relationship("Section", back_populates="meeting_time")
 
 class Section(Base):
     __tablename__ = "sections"
@@ -54,7 +59,18 @@ class Section(Base):
     room_id = Column(Integer, ForeignKey("rooms.id"), nullable=False)
     meeting_time_id = Column(Integer, ForeignKey("meeting_times.id"), nullable=False)
 
-    course = relationship("Course", back_populates="section")
-    instructor = relationship("Instructor", back_populates="section")
-    room = relationship("Room", back_populates="section")
-    meeting_time = relationship("MeetingTime", back_populates="section")
+    course = relationship("Course", back_populates="sections")
+    instructor = relationship("Instructor", back_populates="sections")
+    room = relationship("Room", back_populates="sections")
+    meeting_time = relationship("MeetingTime", back_populates="sections")
+    conflicts = relationship("Conflict", back_populates="section")
+    
+class Conflict(Base):
+    __tablename__ = "conflicts"
+    
+    id = Column(Integer, primary_key=True, index=True)
+    section_id = Column(Integer, ForeignKey("sections.id"), nullable=False)
+    conflict_type = Column(String, nullable=False)
+    description = Column(String)
+    
+    section = relationship("Section", back_populates="conflicts")

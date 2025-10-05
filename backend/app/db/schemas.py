@@ -14,7 +14,7 @@ class CourseCreate(CourseBase):
     pass
 
 # When updating a course, allow partial updates
-class CourseUpdate(CourseBase):
+class CourseUpdate(BaseModel):
     code: Optional[str] = None
     name: Optional[str] = None
     credit_hours: Optional[int] = None
@@ -23,7 +23,6 @@ class CourseUpdate(CourseBase):
 # Response (e.g., when reading from DB)
 class CourseRead(CourseBase):
     id: int
-
     class Config:
         orm_mode = True
 
@@ -31,18 +30,25 @@ class CourseRead(CourseBase):
 class InstructorBase(BaseModel):
     name: str
     email: EmailStr
-    current_load: Optional[int] = 0
     department: Optional[str] = None
+    max_load: int
 
 class InstructorCreate(InstructorBase):
-    pass
+    name: str
+    email: EmailStr
+    department: Optional[str] = None
+    max_load: int
 
-class InstructorUpdate(InstructorBase):
-    pass
+class InstructorUpdate(BaseModel):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    department: Optional[str] = None
+    max_load: Optional[int] = None
 
 class InstructorRead(InstructorBase):
     id: int
-
+    current_load: int
+    is_overloaded: bool
     class Config:
         orm_mode = True
 
@@ -55,11 +61,62 @@ class MeetingTimeBase(BaseModel):
 class MeetingTimeCreate(MeetingTimeBase):
     pass
 
-class MeetingTimeUpdate(MeetingTimeBase):
-    pass
+class MeetingTimeUpdate(BaseModel):
+    day_of_week: Optional[str] = None
+    start_time: Optional[str] = None
+    end_time: Optional[str] = None
 
 class MeetingTimeRead(MeetingTimeBase):
     id: int
+    class Config:
+        orm_mode = True
 
+# Room ----------------------------------        
+class RoomBase(BaseModel):
+    name: str
+    capacity: int
+    constraints: Optional[str] = None
+    
+class RoomCreate(RoomBase):
+    pass
+
+class RoomUpdate(BaseModel):
+    name: Optional[str] = None
+    capacity: Optional[int] = None
+    constraints: Optional[str] = None
+
+class RoomRead(RoomBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+# Section ----------------------------------
+class SectionBase(BaseModel):
+    course_id: int
+    instructor_id: int
+    room_id: int
+    meeting_time_id: int
+
+class SectionCreate(SectionBase):
+    pass
+
+class SectionUpdate(BaseModel):
+    course_id: Optional[int] = None
+    instructor_id: Optional[int] = None
+    room_id: Optional[int] = None
+    meeting_time_id: Optional[int] = None
+
+class SectionRead(SectionBase):
+    id: int
+    class Config:
+        orm_mode = True
+
+# Conflict ----------------------------------
+class ConflictBase(BaseModel):
+    conflict_type: str
+    description: Optional[str] = None
+
+class ConflictRead(ConflictBase):
+    id: int
     class Config:
         orm_mode = True
