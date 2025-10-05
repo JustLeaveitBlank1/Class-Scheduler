@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-//import { useUser } from '../../authentication/use-auth'
 import axios from 'axios'
-
 import { ApiResponse, CourseGetDto} from "../constants/types";
 const CoursesPage = () => {
     const [courses, setCourses] = useState<CourseGetDto[]>();
@@ -49,5 +47,4 @@ const CoursesPage = () => {
         </div>
     );
 };
-
 export default CoursesPage;
