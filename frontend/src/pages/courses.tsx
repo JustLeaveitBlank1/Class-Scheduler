@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { ApiResponse, CourseGetDto} from "../constants/types";
+import { ApiResponse, CourseGetDto} from "../constants/types"
 const CoursesPage = () => {
+    // getter
+    //const url = import.meta.env.BASE_URL;
     const [courses, setCourses] = useState<CourseGetDto[]>();
     const fetchCourses = async () => {
         const response = await axios.get<ApiResponse<CourseGetDto[]>>(
-            `/api/courses`
+            `http://localhost:8000/courses/`
         );
         if (response.data.hasErrors) {
             response.data.errors.forEach((err) => {
@@ -19,15 +21,14 @@ const CoursesPage = () => {
     return (
         <div>
             <h1>All Courses</h1>
-            {courses ? (
-                courses?.map((course) => {
-                    return (
-                        <ul className="card-list">
-                            <li 
-                                key={course.id}
-                                className="card"
-                            >
-                                <div className="card-content">
+            <div className='sqr'>
+                {courses ? (
+                    courses?.map((course) => {
+                        return (
+                            <ul>
+                                <li 
+                                    key={course.id}
+                                >
                                     <h2>
                                         {course.name}
                                         {course.code}
@@ -36,14 +37,14 @@ const CoursesPage = () => {
                                         credits: {course.credit_hours}
                                         time: {course.contact_hours}
                                     </p>
-                                </div>
-                            </li>
-                        </ul>
-                    );
-                })
-            ) : (
-                <div>Loading</div>
-            )}
+                                </li>
+                            </ul>
+                        );
+                    })
+                ) : (
+                    <div>Loading</div>
+                )}
+            </div>
         </div>
     );
 };

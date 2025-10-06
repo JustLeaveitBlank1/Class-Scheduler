@@ -8,7 +8,7 @@ const Home: React.FC = () => {
                     Schedulith: course scheduling app.
             </h1>
             {/* buttons */}
-            <div className="dash">
+            <div className="sqr">
                 <ul>
                     <li>
                         <BubblyLink to="/courses" bgColor="#4588C4" hoverColor="#085FAE">
