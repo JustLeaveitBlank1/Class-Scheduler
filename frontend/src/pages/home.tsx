@@ -30,6 +30,11 @@ const Home: React.FC = () => {
                             Schedule
                         </BubblyLink>
                     </li>
+                    <li>
+                        <BubblyLink to="/sections" bgColor="#6A5ACD" hoverColor="#483D8B">
+                            Sections
+                        </BubblyLink>
+                    </li>
                 </ul>
             </div>
             {/* text caption */}

@@ -1,20 +1,19 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { ApiResponse, CourseGetDto} from "../constants/types"
+import { APIResponse, Course} from "../constants/types"
+
 const CoursesPage = () => {
     // getter
     //const url = import.meta.env.BASE_URL;
     const [courses, setCourses] = useState<CourseGetDto[]>();
     const fetchCourses = async () => {
-        const response = await axios.get<ApiResponse<CourseGetDto[]>>(
-            `http://localhost:8000/courses/`
-        );
-        if (response.data.hasErrors) {
-            response.data.errors.forEach((err) => {
-            console.log(err.message);
-        });
-        } else {
-            setCourses(response.data.data);
+        try {
+            const response = await axios.get<CourseGetDto[]>(
+                "http://localhost:8000/courses/"
+            );
+            setCourses(response.data);
+        } catch (error) {
+            console.error("Failed to fetch courses:", error);
         }
     };
     useEffect(() => {fetchCourses();}, []);

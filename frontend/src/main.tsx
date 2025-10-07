@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import { BrowserRouter } from "react-router-dom";
-import App from "./App";
+import { App } from "./routes/config";
 import "./index.css"; // Tailwind + global styles
 
 // React Query (for fetching from backend APIs)
