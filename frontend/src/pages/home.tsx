@@ -1,5 +1,6 @@
 import React from 'react'
 import BubblyLink from '../components/BubblyLink'
+
 const Home: React.FC = () => {
     return (
         <div className="home">
@@ -39,7 +40,6 @@ const Home: React.FC = () => {
             </div>
             {/* text caption */}
             <div className="caption">
-                
                 <p className="text-gray-700 text-lg">
                     Manage courses, instructors, and rooms all in one place.
                 </p>

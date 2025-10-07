@@ -1,12 +1,18 @@
-@import "tailwindcss/preflight";
-@import "tailwindcss/utilities";
+/* @import "tailwindcss/preflight"; */
+/* @import "tailwindcss/utilities"; */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 /* === Global defaults === */
 html, body, #root {
-  height: 100vmax;
-  width: 100vmax;
+  height: 100vh;
+  width: 100vw;
   background-size: cover;
   background-color: #66819e;
 }
+
 /* Body styles using direct CSS values */
 body {
   color: #e5e2e2;
@@ -14,16 +20,17 @@ body {
   font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
 }
+
 .home {
-  
-  height: 100vmax;
+  height: 100vh;
   background-size: cover;
   font-family: "Times New Roman", Times, serif;
   background-color: #414141;
-  background-image: url('../public/IMG00.png');
+  background-image: url('/src/assets/IMG00.png');
   background-position: center;
   background-repeat: no-repeat;
 }
+
 h1 {
   justify-self: center;
   background-color: #0B2213;
@@ -34,12 +41,13 @@ h1 {
   text-align: center;
   text-indent: 1em;
   border: 2px solid #FFC837;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin: 20px 0; /* margin-bottom: 20px; margin-top: 20px; */
 }
+
 table {
   border-spacing: 5px 15px;
 }
+
 thead {
   justify-self: center;
   background-color: #0B2213;
@@ -50,26 +58,30 @@ thead {
   text-align: center;
   text-indent: 1em;
   border: 2px solid #FFC837;
-  margin-bottom: 20px;
-  margin-top: 20px;
+  margin: 20px 0; /* margin-bottom: 20px; margin-top: 20px; */
 }
-th{
+
+th {
   padding: 4px 12px;
   border: 2px dotted #FFC837;
 }
-td{
+
+td {
   justify-self: center;
   padding: 8px;
   border: 2px dotted #FFC837;
 }
+
 a {
   transition: color 0.2s;
   margin-bottom: 20px;
 }
+
 a img {
   width: 20px;
   height: 20px;
 }
+
 .sqr {
   width: 75%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -79,13 +91,13 @@ a img {
   margin-right: auto;
   background-color: #16171C;
   background-position: auto;
-  display: stretch;
+  display: block;
   justify-content: flex;
   color: #fff;
   border-radius: 10px;
   border: 2px ridge #6877D8;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 .box {
   justify-self: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -95,13 +107,13 @@ a img {
   margin-right: auto;
   background-color: #3e4553;
   background-position: auto;
-  display: stretch;
+  display: block;
   justify-content: flex;
   color: #c4e7bb;
   border-radius: 10px;
   border: 2px ridge #FFC837;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+
 /* Bubbly link/button component */
 .bubbly-link {
   display: flex;
@@ -114,16 +126,19 @@ a img {
   font-size:x-large;
   color: rgba(255, 255, 255, 0.8);
   background-color: #085FAE;
-  box-shadow: 5 4px 6px rgba(19, 19, 19, 0.329);
+  box-shadow: 5px 4px 6px rgba(19, 19, 19, 0.329);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
+
 .bubbly-link:hover {
   transform: scale(1.05);
   box-shadow: 0 10px 20px rgba(0,0,0,0.2);
 }
+
 .bubbly-link:active {
   transform: scale(0.95);
 }
+
 .caption {
   justify-self: center;
   background-color: #533D38;
