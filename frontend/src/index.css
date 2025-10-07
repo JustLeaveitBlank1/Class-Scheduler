@@ -37,6 +37,31 @@ h1 {
   margin-bottom: 20px;
   margin-top: 20px;
 }
+table {
+  border-spacing: 5px 15px;
+}
+thead {
+  justify-self: center;
+  background-color: #0B2213;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  width: 800px;
+  text-align: center;
+  text-indent: 1em;
+  border: 2px solid #FFC837;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+th{
+  padding: 4px 12px;
+  border: 2px dotted #FFC837;
+}
+td{
+  justify-self: center;
+  padding: 8px;
+  border: 2px dotted #FFC837;
+}
 a {
   transition: color 0.2s;
   margin-bottom: 20px;
@@ -61,42 +86,21 @@ a img {
   border: 2px ridge #6877D8;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-.card-list {
-  list-style-type: none;
-  list-style-position: inside;
-  padding: 0;
-}
-.card {
-  width: 57%;
-  border-radius: 8px;
+.box {
+  justify-self: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
   padding: 20px;
   margin-left: auto;
   margin-right: auto;
-  background-color: #1a1a1a;
+  background-color: #3e4553;
   background-position: auto;
-  justify-content: auto;
-  color: #fff;
-  border-radius: 8px;
+  display: stretch;
+  justify-content: flex;
+  color: #c4e7bb;
+  border-radius: 10px;
+  border: 2px ridge #FFC837;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-.card-content {
-  display: flex;
-  text-wrap: nowrap;
-  justify-content: space-between;
-  text-align: center;
-  width: 25%;
-  padding: 20px;
-}
-.card-title {
-  font-size: 20px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.card-description {
-  font-size: 16px;
-  margin-bottom: 10px;
 }
 /* Bubbly link/button component */
 .bubbly-link {
