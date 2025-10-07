@@ -23,12 +23,18 @@ body {
 
 .home {
   height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
   background-size: cover;
   font-family: "Times New Roman", Times, serif;
   background-color: #414141;
   background-image: url('/src/assets/IMG00.png');
+  background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  padding-top: 40px;
 }
 
 h1 {
@@ -112,6 +118,15 @@ a img {
   color: #c4e7bb;
   border-radius: 10px;
   border: 2px ridge #FFC837;
+}
+
+.page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  min-height: 100vh;
+  padding: 2rem;
 }
 
 /* Bubbly link/button component */

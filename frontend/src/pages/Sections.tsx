@@ -27,7 +27,7 @@ const SectionsPage: React.FC = () => {
     if (error) return <div className="text-red-500">{error}</div>;
 
     return (
-        <div className="p-6">
+        <div className="page-container">
             <h1 className="text-2xl font-semibold mb-4">All Sections</h1>
             {sections.length === 0 ? (
                 <div>No sections available.</div>
