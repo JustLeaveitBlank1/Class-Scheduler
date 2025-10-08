@@ -27,31 +27,38 @@ def create_course(db: Session, course: schemas.CourseCreate):
     db.refresh(db_course)
     return db_course
 
-def update_course(db: Session, course_id: int, course: schemas.CourseUpdate):
-    db_course = get_course(db, course_id) # will raise 404 if not found
+def update_course(db: Session, course_id: int, course_update: schemas.CourseUpdate):
+    db_course = get_course(db, course_id)
+    if not db_course:
+        raise HTTPException(status_code=404, detail="Course not found")
+    
+    # Only include explicitly provided fields
+    update_data = course_update.model_dump(exclude_unset=True)
 
-    # Prevent duplicate code if updating
-    if course.code:
+    # Check for duplicate course code -- if being changed
+    if "code" in update_data:
         existing_code = (
             db.query(models.Course)
-            .filter(models.Course.code == course.code, models.Course.id != course_id)
+            .filter(models.Course.code == update_data["code"], models.Course.id != course_id)
             .first()
         )
         if existing_code:
-            raise HTTPException(status_code=400, detail=f"Course code '{course.code}' is already in use")
-        
-    if course.name:
+            raise HTTPException(status_code=400, detail=f"Course code '{update_data['code']}' already exists")
+    
+    # Check for duplicate course name -- if being changed
+    if "name" in update_data:
         existing_name = (
             db.query(models.Course)
-            .filter(models.Course.name == course.name, models.Course.id != course_id)
+            .filter(models.Course.name == update_data["name"], models.Course.id != course_id)
             .first()
         )
         if existing_name:
-            raise HTTPException(status_code=400, detail=f"Course name '{course.name}' is already in use")
-
-    
-    for key, value in course.model_dump(exclude_unset=True).items():
+            raise HTTPException(status_code=400, detail=f"Course name '{update_data['name']}' already exists")
+        
+    # Apply partial update
+    for key, value in update_data.items():
         setattr(db_course, key, value)
+
     db.commit()
     db.refresh(db_course)
     return db_course

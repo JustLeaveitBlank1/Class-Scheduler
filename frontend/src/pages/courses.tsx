@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
-import { APIResponse, Course} from "../constants/types"
+import { Course } from "../constants/types"
 
 const CoursesPage = () => {
     // getter
     //const url = import.meta.env.BASE_URL;
-    const [courses, setCourses] = useState<CourseGetDto[]>();
+    const [courses, setCourses] = useState<Course[]>();
     const fetchCourses = async () => {
         try {
-            const response = await axios.get<CourseGetDto[]>(
+            const response = await axios.get<Course[]>(
                 "http://localhost:8000/courses/"
             );
             setCourses(response.data);
@@ -16,7 +16,7 @@ const CoursesPage = () => {
             console.error("Failed to fetch courses:", error);
         }
     };
-    useEffect(() => {fetchCourses();}, []);
+    useEffect(() => { fetchCourses(); }, []);
     return (
         <div>
             <h1>All Courses</h1>
@@ -30,30 +30,31 @@ const CoursesPage = () => {
                             <th>Meeting Time &emsp;</th>  
                         </tr>
                     </thead>
+                    <tbody className="divide-y divide-gray-700 bg-gray-900 text-gray-100">
+                        {courses ? (
+                            courses.map((course) => (
+                                <tr key={course.id} className="hover:bg-gray-800 transition-colors">  
+                                    <td className='px-4 py-2'>
+                                        {course.name}&ensp;
+                                    </td>
+                                    <td className='px-4 py-2'>
+                                        &emsp;{course.code}&emsp;
+                                    </td>
+                                    <td className="px-4 py-2 text-center">
+                                        &emsp;{course.credit_hours}&emsp;
+                                    </td>
+                                    <td className="px-4 py-2 text-center">
+                                        &emsp;{course.contact_hours}&emsp;
+                                    </td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan={4} className="text-center py-4">Loading...</td>
+                            </tr>
+                        )}   
+                    </tbody>
                 </table>
-                <tbody className="divide-y divide-gray-700 bg-gray-900 text-gray-100">
-                    {courses ? (
-                        courses?.map((course) => {
-                            return (
-                                    <tr key={course.id} className="hover:bg-gray-800 transition-colors">  
-                                        <td className='px-4 py-2'>
-                                            {course.name}&ensp;
-                                        </td>
-                                        <td className='px-4 py-2'>
-                                            &emsp;{course.code}&emsp;
-                                        </td>
-                                        <td className="px-4 py-2 text-center">
-                                            &emsp;{course.credit_hours}&emsp;
-                                        </td>
-                                        <td className="px-4 py-2 text-center">
-                                            &emsp;{course.contact_hours}&emsp;
-                                        </td>
-                                    </tr>
-                            );
-                        })
-                    ) : (<div>Loading</div>)}   
-                </tbody>
-                
             </div>
         </div>
     );
