@@ -10,7 +10,7 @@ const Home: React.FC = () => {
             </h1>
             {/* buttons */}
             <div className="sqr">
-                <ul>
+                <ul className='dash'>
                     <li>
                         <BubblyLink to="/courses" bgColor="#4588C4" hoverColor="#085FAE">
                             Courses
@@ -22,18 +22,18 @@ const Home: React.FC = () => {
                         </BubblyLink>
                     </li>
                     <li>
-                        <BubblyLink to="/rooms" bgColor="#4BD980" hoverColor="#00BE4D">
+                        <BubblyLink to="/rooms" bgColor="#4BDA70" hoverColor="#00BE4D">
                             Rooms
-                        </BubblyLink>
-                    </li>
-                    <li>
-                        <BubblyLink to="/schedule" bgColor="#FF7558" hoverColor="#AA4C39">
-                            Schedule
                         </BubblyLink>
                     </li>
                     <li>
                         <BubblyLink to="/sections" bgColor="#6A5ACD" hoverColor="#483D8B">
                             Sections
+                        </BubblyLink>
+                    </li>
+                    <li>
+                        <BubblyLink to="/schedule" bgColor="#FF7558" hoverColor="#AA4C39">
+                            Schedule
                         </BubblyLink>
                     </li>
                 </ul>
