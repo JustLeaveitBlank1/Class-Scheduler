@@ -2,7 +2,7 @@ from pydantic import BaseModel, EmailStr
 from typing import Optional
 
 # Course ----------------------------------
-# Shared properities
+# Shared properties
 class CourseBase(BaseModel):
     code: str
     name: str
@@ -24,7 +24,7 @@ class CourseUpdate(BaseModel):
 class CourseRead(CourseBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Instructor ----------------------------------
 class InstructorBase(BaseModel):
@@ -34,10 +34,7 @@ class InstructorBase(BaseModel):
     max_load: int
 
 class InstructorCreate(InstructorBase):
-    name: str
-    email: EmailStr
-    department: Optional[str] = None
-    max_load: int
+    pass
 
 class InstructorUpdate(BaseModel):
     name: Optional[str] = None
@@ -50,7 +47,7 @@ class InstructorRead(InstructorBase):
     current_load: int
     is_overloaded: bool
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Meeting Time ----------------------------------
 class MeetingTimeBase(BaseModel):
@@ -69,7 +66,7 @@ class MeetingTimeUpdate(BaseModel):
 class MeetingTimeRead(MeetingTimeBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Room ----------------------------------        
 class RoomBase(BaseModel):
@@ -88,7 +85,7 @@ class RoomUpdate(BaseModel):
 class RoomRead(RoomBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # Section ----------------------------------
 class SectionBase(BaseModel):
@@ -109,14 +106,4 @@ class SectionUpdate(BaseModel):
 class SectionRead(SectionBase):
     id: int
     class Config:
-        orm_mode = True
-
-# Conflict ----------------------------------
-class ConflictBase(BaseModel):
-    conflict_type: str
-    description: Optional[str] = None
-
-class ConflictRead(ConflictBase):
-    id: int
-    class Config:
-        orm_mode = True
+        from_attributes = True

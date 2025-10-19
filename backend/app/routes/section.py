@@ -2,8 +2,17 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.db.database import SessionLocal
 from app.db import schemas
+from app.db import models
 from app.db.crud import section as section_crud
-from app.db.crud import conflict as conflict_crud
+from datetime import datetime
+
+def parse_time(tstr: str):
+    # Convert a 'HH:MM' 24-hour string to a time object
+    return datetime.strptime(tstr, "%H:%M").time()
+
+def times_overlap(start1, end1, start2, end2):
+    s1, e1, s2, e2 = map(parse_time, (start1, end1, start2, end2))
+    return s1 < e2 and s2 < e1
 
 router = APIRouter(prefix="/sections", tags=["Sections"])
 
@@ -42,7 +51,3 @@ def delete_section(section_id: int, db: Session=Depends(get_db)):
     if not db_section:
         raise HTTPException(status_code=404, detail="Section not found")
     return db_section
-
-@router.get("/{section_id}/conflicts", response_model=list[schemas.ConflictRead])
-def read_section_conflicts(section_id: int, db: Session=Depends(get_db)):
-    return conflict_crud.get_conflicts_by_section(db, section_id)
