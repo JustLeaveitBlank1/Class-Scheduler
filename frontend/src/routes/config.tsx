@@ -8,17 +8,19 @@ import SchedulePage from '../pages/Schedule';
 import InstructorsPage from '../pages/Instructors';
 import RoomsPage from '../pages/Rooms';
 import SectionsPage from '../pages/Sections';
+import CreateSectionPage from "../pages/CreateSection";
 
 export const App = () => {
     return (
         <Routes>
-            <Route path="/" element={<Home />}/>
-            <Route path="/instructors" element={<InstructorsPage />}/>
-            <Route path="/rooms" element={<RoomsPage />}/>
-            <Route path="/courses" element={<CoursesPage />}/>
-            <Route path="/schedule" element={<SchedulePage />}/>
-            <Route path="/sections" element={<SectionsPage />}/>
-            <Route path="*" element={<NotFound />}/>
+            <Route path="/" element={<Home />} />
+            <Route path="/instructors" element={<InstructorsPage />} />
+            <Route path="/rooms" element={<RoomsPage />} />
+            <Route path="/courses" element={<CoursesPage />} />
+            <Route path="/schedule" element={<SchedulePage />} />
+            <Route path="/sections" element={<SectionsPage />} />
+            <Route path="/sections/create" element={<CreateSectionPage />} />
+            <Route path="*" element={<NotFound />} />
         </Routes>
     );
 };
