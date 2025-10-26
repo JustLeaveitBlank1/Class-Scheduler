@@ -5,8 +5,7 @@
 /* === Global defaults === */
 html {
   background-image: url('/src/assets/IMG01.png');
-  height: 100vh;
-  width: 100vw;
+  height: 100%;
   background-size: cover;
 }
 /*
@@ -33,6 +32,8 @@ body {
   height: 100vh;
   width: 100vw;
   flex-direction: column;
+  text-align: center;
+  display: flex;
   align-items: center;
   justify-content: flex-start;
   background-size: cover;
@@ -40,7 +41,7 @@ body {
   background-color: #414141;
   background-image: url('/src/assets/IMG00.png');
   background-repeat: no-repeat;
-  padding-top: 20px;
+  padding: 2rem;
 }
 
 .dash {
@@ -103,11 +104,9 @@ a img {
   width: 75%;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  padding: 40px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 2rem;
   background-color: #16171C;
-  background-position: auto;
+  background-position: center;
   display: block;
   justify-content: flex;
   color: #ffffff;
@@ -119,13 +118,10 @@ a img {
   justify-self: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
-  padding: 20px;
-  margin-left: auto;
-  margin-right: auto;
+  padding: 2rem;
   background-color: #3e4553;
-  background-position: auto;
   display: block;
-  justify-content: flex;
+  justify-content: column;
   color: #c4e7bb;
   border-radius: 10px;
   border: 2px ridge #FFC837;

@@ -1,3 +1,6 @@
+export type Day = "Mon" | "Tue" | "Wed" | "Thu" | "Fri";
+export type ViewMode = "rooms" | "instructors";
+
 // Shared error type
 export interface APIError {
     property?: string;
@@ -9,7 +12,7 @@ export interface Course {
     id: number;
     code: string;
     name: string;
-    credit_hours: number;
+    credit_hours: 1|3|5;
     contact_hours: number;
 }
 
@@ -31,7 +34,7 @@ export interface Room {
 
 export interface MeetingTime {
     id: number;
-    day_of_week: string; // e.g., "MWF"
+    day_of_week: Day[]; // e.g., "MWF"
     start_time: string; // e.g., "09:00"
     end_time: string; // e.g., "10:15"
 }

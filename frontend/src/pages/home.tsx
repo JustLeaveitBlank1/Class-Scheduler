@@ -5,8 +5,8 @@ const Home: React.FC = () => {
     return (
         <div className="home">
             {/* header */}
-            <h1 className="text-4xl font-extrabold text-indigo-700 mb-4">
-                    Schedulith: course scheduling app.
+            <h1>
+                Schedulith: course scheduling app.
             </h1>
             {/* buttons */}
             <div className="sqr">
@@ -40,7 +40,7 @@ const Home: React.FC = () => {
             </div>
             {/* text caption */}
             <div className="caption">
-                <p className="text-gray-700 text-lg">
+                <p>
                     Manage courses, instructors, and rooms all in one place.
                 </p>
             </div>

@@ -24,33 +24,33 @@ const CoursesPage = () => {
                 <table>
                     <thead>
                         <tr>
-                            <th>Name&emsp;</th>
-                            <th>Code&emsp;</th>
-                            <th>Credits&emsp;</th>
-                            <th>Meeting Time &emsp;</th>  
+                            <th scope="col">Name&emsp;</th>
+                            <th scope="col">Code&emsp;</th>
+                            <th scope="col">Credits&emsp;</th>
+                            <th scope="col">Meeting Time &emsp;</th> 
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-700 bg-gray-900 text-gray-100">
+                    <tbody>
                         {courses ? (
-                            courses.map((course) => (
-                                <tr key={course.id} className="hover:bg-gray-800 transition-colors">  
-                                    <td className='px-4 py-2'>
+                            courses?.map((course) => (
+                                <tr key={course.id}>  
+                                    <td>
                                         {course.name}&ensp;
                                     </td>
-                                    <td className='px-4 py-2'>
+                                    <td>
                                         &emsp;{course.code}&emsp;
                                     </td>
-                                    <td className="px-4 py-2 text-center">
+                                    <td>
                                         &emsp;{course.credit_hours}&emsp;
                                     </td>
-                                    <td className="px-4 py-2 text-center">
+                                    <td>
                                         &emsp;{course.contact_hours}&emsp;
                                     </td>
                                 </tr>
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={4} className="text-center py-4">Loading...</td>
+                                <td colSpan={4}>Loading...</td>
                             </tr>
                         )}   
                     </tbody>

@@ -32,38 +32,40 @@ const SectionsPage: React.FC = () => {
             {sections.length === 0 ? (
                 <div>No sections available.</div>
             ) : (
-                <table className="min-w-full border border-gray-300">
-                    <thead className="bg-gray-100">
-                        <tr>
-                            <th className="border px-4 py-2 text-left">Section Id</th>
-                            <th className="border px-4 py-2 text-left">Course</th>
-                            <th className="border px-4 py-2 text-left">Instructor</th>
-                            <th className="border px-4 py-2 text-left">Room</th>
-                            <th className="border px-4 py-2 text-left">Meeting Time</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {sections.map((section) => (
-                            <tr key={section.id} className="hover:bg-gray-50">
-                                <td className="border px-4 py-2">{section.id}</td>
-                                <td className="border px-4 py-2">
-                                    {section.course?.name || `Course #${section.course_id}`}
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {section.instructor?.name || `Instructor #${section.instructor_id}`}
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {section.room?.name || `Room #${section.room_id}`}
-                                </td>
-                                <td className="border px-4 py-2">
-                                    {section.meeting_time
-                                    ? `${section.meeting_time.day_of_week} ${section.meeting_time.start_time}-${section.meeting_time.end_time}`
-                                    : `MeetingTime #${section.meeting_time_id}`}
-                                </td>
+                <div className="box">
+                    <table className="min-w-full border border-gray-300">
+                        <thead className="bg-gray-100">
+                            <tr>
+                                <th className="border px-4 py-2 text-left">Section Id</th>
+                                <th className="border px-4 py-2 text-left">Course</th>
+                                <th className="border px-4 py-2 text-left">Instructor</th>
+                                <th className="border px-4 py-2 text-left">Room</th>
+                                <th className="border px-4 py-2 text-left">Meeting Time</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            {sections.map((section) => (
+                                <tr key={section.id} className="hover:bg-gray-50">
+                                    <td className="border px-4 py-2">{section.id}</td>
+                                    <td className="border px-4 py-2">
+                                        {section.course?.name || `Course #${section.course_id}`}
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        {section.instructor?.name || `Instructor #${section.instructor_id}`}
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        {section.room?.name || `Room #${section.room_id}`}
+                                    </td>
+                                    <td className="border px-4 py-2">
+                                        {section.meeting_time
+                                        ? `${section.meeting_time.day_of_week} ${section.meeting_time.start_time}-${section.meeting_time.end_time}`
+                                        : `MeetingTime #${section.meeting_time_id}`}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             )}
         </div>
     );

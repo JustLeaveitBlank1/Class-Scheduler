@@ -5,7 +5,7 @@ nvm use --lts
 nvm alias default lts/*
 node -v
 
-// builds structure (do not use, only needed with new project)
+// builds structure (only needed one time)
 npm create vite@latest frontend 
 
 // modules
