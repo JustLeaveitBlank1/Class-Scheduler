@@ -1,56 +1,86 @@
-from sqlalchemy.orm import Session
-from app.db import models, schemas
-from fastapi import HTTPException
+# app/db/crud/room.py
+from __future__ import annotations
 
-def get_rooms(db: Session, skip: int=0, limit: int=100):
+from typing import Optional, List
+from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
+
+from app.db import models, schemas
+
+
+# -------- helpers --------
+def _normalize_room_number(value: str) -> str:
+    # Trim and collapse internal whitespace (e.g., "CSB  210" -> "CSB 210")
+    return " ".join(value.split())
+
+
+# -------- reads --------
+def get_rooms(db: Session, skip: int = 0, limit: int = 100) -> List[models.Room]:
     return db.query(models.Room).offset(skip).limit(limit).all()
 
-def get_room(db: Session, room_id: int):
-    room = db.query(models.Room).filter(models.Room.id == room_id).first()
-    if not room:
-        raise HTTPException(status_code=404, detail=f"Room with id '{room_id}' not found")
+
+def get_room(db: Session, room_id: int) -> Optional[models.Room]:
+    return db.query(models.Room).filter(models.Room.id == room_id).first()
+
+
+def get_room_by_number(db: Session, room_number: str) -> Optional[models.Room]:
+    rn = _normalize_room_number(room_number)
+    return db.query(models.Room).filter(models.Room.room_number == rn).first()
+
+
+# -------- create --------
+def create_room(db: Session, payload: schemas.RoomCreate) -> models.Room:
+    data = payload.model_dump()
+    # normalize + validate
+    data["room_number"] = _normalize_room_number(data["room_number"])
+    if data["capacity"] < 0:
+        raise ValueError("Capacity must be a non-negative integer.")
+
+    room = models.Room(**data)
+    db.add(room)
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        # Let router translate this to 409 with a friendly message
+        raise
+    db.refresh(room)
     return room
 
-def create_room(db: Session, room: schemas.RoomCreate):
-    # Check for duplicate name
-    existing = db.query(models.Room).filter(models.Room.name == room.name).first()
-    if existing:
-        raise HTTPException(status_code=400, detail=f"Room with name '{room.name}' already exists")
-    
-    if room.capacity <= 0:
-        raise HTTPException(status_code=400, detail=f"Room capacity must be a positive number ({room.capacity} > 0)")
 
-    db_room = models.Room(**room.model_dump())
-    db.add(db_room)
-    db.commit()
+# -------- update --------
+def update_room(db: Session, room: schemas.RoomUpdate, room_id: int) -> Optional[models.Room]:
+    db_room = get_room(db, room_id)
+    if not db_room:
+        return None
+
+    changes = room.model_dump(exclude_unset=True)
+
+    if "room_number" in changes and changes["room_number"] is not None:
+        changes["room_number"] = _normalize_room_number(changes["room_number"])
+
+    if "capacity" in changes and changes["capacity"] is not None:
+        if changes["capacity"] < 0:
+            raise ValueError("Capacity must be a non-negative integer.")
+
+    for k, v in changes.items():
+        setattr(db_room, k, v)
+
+    try:
+        db.commit()
+    except IntegrityError:
+        db.rollback()
+        # Let router translate this to 409 with a friendly message
+        raise
     db.refresh(db_room)
     return db_room
 
-def update_room(db: Session, room_id: int, room: schemas.RoomUpdate):
-    db_room = get_room(db, room_id) # will raise 404 if not found
 
-    # Check for duplicate name if updating
-    if room.name:
-        existing = (
-            db.query(models.Room)
-            .filter(models.Room.name == room.name, models.Room.id != room_id)
-            .first()
-        )
-        if existing:
-            raise HTTPException(status_code=400, detail=f"Room name '{room.name}' is already in use")
-        
-    if room.capacity is not None and room.capacity <= 0:
-        raise HTTPException(status_code=400, detail=f"Room capacity must be a positive number ({room.capacity} > 0)")
-    
-    for key, value in room.model_dump(exclude_unset=True).items():
-        setattr(db_room, key, value)
-
-    db.commit()
-    db.refresh(db_room)
-    return db_room
-
-def delete_room(db: Session, room_id: int):
-    db_room = get_room(db, room_id) # will raise 404 if not found
+# -------- delete --------
+def delete_room(db: Session, room_id: int) -> Optional[models.Room]:
+    db_room = get_room(db, room_id)
+    if not db_room:
+        return None
     db.delete(db_room)
     db.commit()
     return db_room
