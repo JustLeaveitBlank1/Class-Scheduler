@@ -1,19 +1,10 @@
-import React from "react";
-import ReactDOM from "react-dom/client";
-import { BrowserRouter } from "react-router-dom";
-import { App } from "./routes/config";
-import "./index.css"; // Tailwind + global styles
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+import './index.css'
+import App from './App.tsx'
 
-// React Query (for fetching from backend APIs)
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-const queryClient = new QueryClient();
-
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <App />
-      </QueryClientProvider>
-    </BrowserRouter>
-  </React.StrictMode>
-);
+createRoot(document.getElementById('root')!).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
