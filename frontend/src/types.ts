@@ -40,3 +40,7 @@ export interface Section {
 }
 
 export type ViewMode = "rooms" | "instructors";
+// ...your existing types above
+
+export type SectionCreate = Omit<Section, "id">;
+export type SectionPatch = Partial<Omit<Section, "id">> & { id: string };

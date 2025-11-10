@@ -1,58 +1,159 @@
+// src/store.ts
 import { create } from "zustand";
-import { nanoid } from "nanoid";
-import type { Section } from "./types";   // 👈 type-only import
 import { meetingSlots } from "./data";
-
+import type {
+  Course,
+  Instructor,
+  Room,
+  Section,
+  SectionCreate,
+  SectionPatch,
+} from "./types";
+import { CatalogAPI } from "./api/catalog";
+import { SectionsAPI } from "./api/sections";
 
 type Filters = {
-  rooms: number[];        // selected room ids
-  instructors: number[];  // selected instructor ids
+  rooms: number[];
+  instructors: number[];
   mode: "rooms" | "instructors";
 };
 
 type State = {
-  sections: Section[];
-  filters: Filters;
-  addSection: (s: Omit<Section, "id">) => void;
-  updateSection: (id: string, patch: Partial<Section>) => void;
-  removeSection: (id: string) => void;
+  // catalog data
+  courses: Course[];
+  instructors: Instructor[];
+  rooms: Room[];
+  coursesLoaded: boolean;
+  instructorsLoaded: boolean;
+  roomsLoaded: boolean;
 
+  // sections data
+  sections: Section[];
+
+  // ui
+  loading: boolean;
+  error?: string;
+  filters: Filters;
+
+  // catalog
+  loadCatalog: () => Promise<void>;
+
+  // sections
+  loadSections: () => Promise<void>;
+  addSection: (s: SectionCreate) => Promise<void>;
+  updateSection: (id: string, patch: Partial<Section>) => Promise<void>;
+  removeSection: (id: string) => Promise<void>;
+
+  // filters
   setMode: (m: Filters["mode"]) => void;
   setRooms: (ids: number[]) => void;
   setInstructors: (ids: number[]) => void;
 
-  hasConflict: (candidate: Omit<Section, "id">, selfId?: string) => string | null;
+  // validation
+  hasConflict: (candidate: SectionCreate, selfId?: string) => string | null;
 };
 
 export const useStore = create<State>((set, get) => ({
+  // catalog
+  courses: [],
+  instructors: [],
+  rooms: [],
+  coursesLoaded: false,
+  instructorsLoaded: false,
+  roomsLoaded: false,
+
+  // sections
   sections: [],
+
+  // ui
+  loading: false,
   filters: { rooms: [], instructors: [], mode: "rooms" },
 
-  addSection: (s) => {
+  // -------- Catalog (courses/instructors/rooms) ----------
+  loadCatalog: async () => {
+    set({ loading: true, error: undefined });
+    try {
+      const [courses, instructors, rooms] = await Promise.all([
+        CatalogAPI.courses(),
+        CatalogAPI.instructors(),
+        CatalogAPI.rooms(),
+      ]);
+      set({
+        courses,
+        instructors,
+        rooms,
+        coursesLoaded: true,
+        instructorsLoaded: true,
+        roomsLoaded: true,
+        loading: false,
+      });
+    } catch (e: any) {
+      set({ error: e.message ?? String(e), loading: false });
+    }
+  },
+
+  // -------- Sections (list/create/update/delete) ----------
+  loadSections: async () => {
+    set({ loading: true, error: undefined });
+    try {
+      const sections = await SectionsAPI.list();
+      set({ sections, loading: false });
+    } catch (e: any) {
+      set({ error: e.message ?? String(e), loading: false });
+    }
+  },
+
+  addSection: async (s) => {
     const err = get().hasConflict(s);
     if (err) throw new Error(err);
-    set((st) => ({ sections: [...st.sections, { ...s, id: nanoid() }] }));
+    set({ loading: true, error: undefined });
+    try {
+      await SectionsAPI.create(s);
+      await get().loadSections();
+    } catch (e: any) {
+      set({ error: e.message ?? String(e), loading: false });
+      throw e;
+    }
   },
 
-  updateSection: (id, patch) => {
-    set((st) => ({
-      sections: st.sections.map((x) => (x.id === id ? { ...x, ...patch } : x)),
-    }));
+  updateSection: async (id, patch) => {
+    const self = get().sections.find((x) => x.id === id);
+    const candidate = { ...(self as Section), ...(patch as Partial<Section>) } as SectionCreate;
+    const err = get().hasConflict(candidate, id);
+    if (err) throw new Error(err);
+
+    set({ loading: true, error: undefined });
+    try {
+      await SectionsAPI.update(id, { id, ...patch } as SectionPatch);
+      await get().loadSections();
+    } catch (e: any) {
+      set({ error: e.message ?? String(e), loading: false });
+      throw e;
+    }
   },
 
-  removeSection: (id) =>
-    set((st) => ({ sections: st.sections.filter((x) => x.id !== id) })),
+  removeSection: async (id) => {
+    set({ loading: true, error: undefined });
+    try {
+      await SectionsAPI.remove(id);
+      await get().loadSections();
+    } catch (e: any) {
+      set({ error: e.message ?? String(e), loading: false });
+      throw e;
+    }
+  },
 
+  // -------- Filters ----------
   setMode: (m) => set((st) => ({ filters: { ...st.filters, mode: m } })),
   setRooms: (ids) => set((st) => ({ filters: { ...st.filters, rooms: ids } })),
   setInstructors: (ids) =>
     set((st) => ({ filters: { ...st.filters, instructors: ids } })),
 
+  // -------- Conflict Check (unchanged) ----------
   hasConflict: (cand, selfId) => {
     const slot = meetingSlots.find((s) => s.id === cand.meetingSlotId);
     if (!slot) return "Invalid meeting slot";
 
-    // same timeslot + same instructor OR same room
     const clash = get().sections.find((s) => {
       if (selfId && s.id === selfId) return false;
       if (s.meetingSlotId !== cand.meetingSlotId) return false;

@@ -56,13 +56,63 @@ def calendar_events(
                 "title": f"{s.course.code} - {getattr(s.course, 'name', '')}".strip(" -"),
                 "sub": f"{s.instructor.name} • {room_label}",
                 "resource": f"{resource}:{getattr(s, resource).id}",
-                "day_of_week": mt.day_of_week,      # e.g., "Tue" / "Tuesday"
-                "start_time": str(mt.start_time),   # "11:00:00"
-                "end_time": str(mt.end_time),       # "12:15:00"
+                "day_of_week": mt.day_of_week,      # e.g., "MW", "TH"
+                "start_time": str(mt.start_time),   # "11:00" or "11:00:00"
+                "end_time": str(mt.end_time),       # "12:15" or "12:15:00"
                 "seats": s.seats,
             }
         )
     return items
+
+
+# ---------- helpers ----------
+
+def _map_integrity_error_to_msg(e: IntegrityError) -> str:
+    """
+    Extract a friendly message from a unique-constraint IntegrityError.
+    Tries psycopg diag first; falls back to string matching.
+    """
+    constraint = None
+    orig = getattr(e, "orig", None)
+    if orig is not None:
+        diag = getattr(orig, "diag", None)
+        if diag is not None:
+            constraint = getattr(diag, "constraint_name", None)
+
+    if not constraint:
+        text = str(orig or e)
+        # Match both your current names and possible future ones
+        for name in (
+            "uq_room_time",                # your current model names
+            "uq_instructor_time",
+            "uq_course_section_number",    # if you add section_number uniqueness
+            "uq_sections_room_time",       # older variants some teams used
+            "uq_sections_instructor_time",
+        ):
+            if name in text:
+                constraint = name
+                break
+
+    if constraint in ("uq_room_time", "uq_sections_room_time"):
+        return "Room is already scheduled at that meeting time."
+    if constraint in ("uq_instructor_time", "uq_sections_instructor_time"):
+        return "Instructor is already scheduled at that meeting time."
+    if constraint == "uq_course_section_number":
+        return "This course already has that section number."
+    return "Unique constraint violated."
+
+
+def _map_value_error_to_http(e: ValueError) -> HTTPException:
+    msg = str(e)
+    low = msg.lower()
+    if ("does not exist" in low
+        or "non-negative" in low
+        or "exceed room capacity" in low
+        or "already booked" in low
+        or "already scheduled" in low
+        or "section number" in low):
+        return HTTPException(status_code=400, detail=msg)
+    return HTTPException(status_code=409, detail=msg)
 
 
 # ---------- CRUD endpoints ----------
@@ -73,15 +123,20 @@ def list_sections(
     limit: int = 100,
     instructor_id: int | None = None,
     room_id: int | None = None,
+    course_id: int | None = None,
+    status_: schemas.SectionStatus | None = Query(default=None, alias="status"),
+    include_deleted: bool = False,
     db: Session = Depends(get_db),
 ):
-    # Keep in sync with your CRUD signature
     return crud.list_sections(
         db,
         skip=skip,
         limit=limit,
         instructor_id=instructor_id,
         room_id=room_id,
+        course_id=course_id,
+        status_=status_,
+        include_deleted=include_deleted,
     )
 
 
@@ -91,46 +146,6 @@ def get_section(section_id: int, db: Session = Depends(get_db)):
     if not sec:
         raise HTTPException(status_code=404, detail="Section not found")
     return sec
-
-
-def _map_integrity_error_to_msg(e: IntegrityError) -> str:
-    """
-    Robustly extract the violated constraint name from psycopg2/psycopg error,
-    falling back to string parsing if diagnostics aren't available.
-    """
-    constraint: Optional[str] = None
-    # psycopg2 puts details on .orig.diag.constraint_name when available
-    orig = getattr(e, "orig", None)
-    if orig is not None:
-        diag = getattr(orig, "diag", None)
-        if diag is not None:
-            constraint = getattr(diag, "constraint_name", None)
-
-    # Fallback: parse the stringified error for known constraint names
-    if not constraint:
-        text = str(orig or e)
-        if "uq_sections_room_time" in text:
-            constraint = "uq_sections_room_time"
-        elif "uq_sections_instructor_time" in text:
-            constraint = "uq_sections_instructor_time"
-
-    if constraint == "uq_sections_room_time":
-        return "Room is already scheduled at that meeting time."
-    if constraint == "uq_sections_instructor_time":
-        return "Instructor is already scheduled at that meeting time."
-    return "Unique constraint violated."
-
-
-def _map_value_error_to_http(e: ValueError) -> HTTPException:
-    msg = str(e)
-    low = msg.lower()
-    if (
-        "does not exist" in low
-        or "non-negative" in low
-        or "exceed room capacity" in low
-    ):
-        return HTTPException(status_code=400, detail=msg)
-    return HTTPException(status_code=409, detail=msg)
 
 
 @router.post("/", response_model=schemas.SectionRead, status_code=status.HTTP_201_CREATED)

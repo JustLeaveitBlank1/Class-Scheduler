@@ -205,7 +205,8 @@ def delete_section(db: Session, section_id: int) -> models.Section | None:
 
     # Soft delete if that column exists on the model (your migration added it)
     if hasattr(models.Section, "deleted_at"):
-        sec.deleted_at = datetime.now(timezone.utc)
+        # Use setattr to keep the type-checker happy
+        setattr(sec, "deleted_at", datetime.now(timezone.utc))
         db.add(sec)
     else:
         db.delete(sec)

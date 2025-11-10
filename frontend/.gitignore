@@ -1,3 +1,7 @@
+# =====================================
+# FRONTEND: Node / Vite Project
+# =====================================
+
 # Logs
 logs
 *.log
@@ -7,18 +11,33 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Dependency directories
+node_modules/
+# Production build output
+dist/
+dist-ssr/
 *.local
 
-# Editor directories and files
+# Vite cache (optional but recommended)
+frontend/.vite/deps/
+
+# Environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Editor and system files
 .vscode/*
 !.vscode/extensions.json
-.idea
+.idea/
 .DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
+
+# Optional OS junk files
+Thumbs.db

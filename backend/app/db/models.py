@@ -1,7 +1,20 @@
-# app/db/models.py
-from sqlalchemy import Column, Integer, String, ForeignKey, UniqueConstraint
+from sqlalchemy import (
+    Column,
+    Integer,
+    String,
+    ForeignKey,
+    UniqueConstraint,
+    Boolean,
+    DateTime,
+    Enum,
+    Text,
+    func,
+)
 from sqlalchemy.orm import relationship
 from .database import Base
+from enum import Enum as PyEnum
+
+# ----------------- Domain Models -----------------
 
 class Course(Base):
     __tablename__ = "courses"
@@ -12,7 +25,6 @@ class Course(Base):
     credit_hours = Column(Integer, nullable=False)
     contact_hours = Column(Integer, nullable=False)
 
-    # one Course -> many Sections
     sections = relationship(
         "Section",
         back_populates="course",
@@ -28,6 +40,11 @@ class Instructor(Base):
     name = Column(String, unique=True, index=True, nullable=False)
     email = Column(String, unique=True, nullable=False)
     department = Column(String, nullable=True)
+
+    # NEW: target load for the term (credits or contact-hours; pick one canonically)
+    target_load = Column(Integer, nullable=True)
+
+    # keep your existing fields
     max_load = Column(Integer, default=15)
     current_load = Column(Integer, default=0)
 
@@ -43,8 +60,7 @@ class Room(Base):
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True, index=True)
-    # Using room_number to match your schemas/seed script
-    room_number = Column(String, unique=True, nullable=False)
+    room_number = Column(String, unique=True, nullable=False)  # matches schemas/seed
     capacity = Column(Integer, nullable=False)
     constraints = Column(String)
 
@@ -60,7 +76,7 @@ class MeetingTime(Base):
     __tablename__ = "meeting_times"
 
     id = Column(Integer, primary_key=True, index=True)
-    day_of_week = Column(String, nullable=False)   # e.g., "M/W" or "T/Th"
+    day_of_week = Column(String, nullable=False)   # e.g., "MW" or "TTh"
     start_time = Column(String, nullable=False)    # "09:30"
     end_time   = Column(String, nullable=False)    # "10:45"
 
@@ -72,6 +88,12 @@ class MeetingTime(Base):
     )
 
 
+# NEW: status enum for sections
+class SectionStatus(PyEnum):
+    open = "open"
+    closed = "closed"
+
+
 class Section(Base):
     __tablename__ = "sections"
 
@@ -81,13 +103,19 @@ class Section(Base):
     room_id = Column(Integer, ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False)
     meeting_time_id = Column(Integer, ForeignKey("meeting_times.id", ondelete="CASCADE"), nullable=False)
 
-    # Seats must exist in the DB; app default 0 for new ORM instances
+    # existing
     seats = Column(Integer, nullable=False, default=0)
 
-    # Enforce “no time conflicts” at the DB level too
+    # NEW fields
+    status = Column(Enum(SectionStatus, name="section_status"), nullable=True)  # default handled in API
+    section_number = Column(String(16), nullable=True)  # e.g., "-1", "-2"
+    notes = Column(Text, nullable=True)
+    deleted_at = Column(DateTime(timezone=True), nullable=True)  # soft delete
+
     __table_args__ = (
         UniqueConstraint("room_id", "meeting_time_id", name="uq_room_time"),
         UniqueConstraint("instructor_id", "meeting_time_id", name="uq_instructor_time"),
+        UniqueConstraint("course_id", "section_number", name="uq_course_section_number"),
     )
 
     course = relationship("Course", back_populates="sections")
@@ -95,7 +123,6 @@ class Section(Base):
     room = relationship("Room", back_populates="sections")
     meeting_time = relationship("MeetingTime", back_populates="sections")
 
-    # one Section -> many Conflicts
     conflicts = relationship(
         "Conflict",
         back_populates="section",
@@ -108,10 +135,22 @@ class Conflict(Base):
     __tablename__ = "conflicts"
 
     id = Column(Integer, primary_key=True, index=True)
-    # must reference sections.id (fixed)
     section_id = Column(Integer, ForeignKey("sections.id", ondelete="CASCADE"), nullable=False)
     conflict_type = Column(String, nullable=False)
     description = Column(String)
 
-    # must match Section.conflicts back_populates name
     section = relationship("Section", back_populates="conflicts")
+
+
+# ----------------- Auth: User -----------------
+
+class User(Base):
+    __tablename__ = "users"
+    __table_args__ = (UniqueConstraint("email", name="uq_users_email"),)
+
+    id = Column(Integer, primary_key=True, index=True)
+    email = Column(String(255), unique=True, index=True, nullable=False)
+    hashed_password = Column(String(255), nullable=False)
+    full_name = Column(String(255), nullable=True)
+    is_active = Column(Boolean, default=True, nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now())

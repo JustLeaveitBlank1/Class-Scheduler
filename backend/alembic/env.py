@@ -5,8 +5,7 @@ from pathlib import Path
 from logging.config import fileConfig
 
 from alembic import context
-from sqlalchemy import pool
-from sqlalchemy import engine_from_config
+from sqlalchemy import engine_from_config, pool
 
 # --- Make "from app..." imports work when running `alembic` from project root ---
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -14,7 +13,11 @@ if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
 # Import your app's metadata and engine
-from app.db.database import Base, engine  # <-- uses your DATABASE_URL from .env
+from app.db.database import Base, engine  # uses DATABASE_URL from .env
+
+# *** IMPORTANT: force-load all model classes so they register with Base.metadata ***
+# (Do not remove; Alembic autogenerate needs this side effect)
+from app.db import models  # noqa: F401
 
 # Alembic Config object (reads alembic.ini)
 config = context.config
@@ -29,6 +32,7 @@ if config.config_file_name is not None:
 # Autogenerate needs your ORM metadata
 target_metadata = Base.metadata
 
+
 def run_migrations_offline() -> None:
     url = config.get_main_option("sqlalchemy.url")
     context.configure(
@@ -36,11 +40,12 @@ def run_migrations_offline() -> None:
         target_metadata=target_metadata,
         literal_binds=True,
         dialect_opts={"paramstyle": "named"},
-        compare_type=True,
-        compare_server_default=True,
+        compare_type=True,               # detect column type changes
+        compare_server_default=True,     # detect server_default changes
     )
     with context.begin_transaction():
         context.run_migrations()
+
 
 def run_migrations_online() -> None:
     connectable = engine  # use app's engine so URL/options match
@@ -54,6 +59,7 @@ def run_migrations_online() -> None:
         )
         with context.begin_transaction():
             context.run_migrations()
+
 
 if context.is_offline_mode():
     run_migrations_offline()
