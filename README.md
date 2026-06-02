@@ -6,24 +6,29 @@ Built as: College Senior Finals Project (Solo)
 
 
 🖥️ Screenshots
-
-Add screenshots here — drag images into a GitHub issue to get a URL, then paste below
-
-![Dashboard](<img width="1916" height="937" alt="Screenshot 2026-06-02 163433" src="https://github.com/user-attachments/assets/24a673fb-9036-4c49-892d-d28c76644ae9" />
-)
-![Calendar View](<img width="1917" height="932" alt="Screenshot 2026-06-02 162727" src="https://github.com/user-attachments/assets/02f6410d-98e2-4a9d-bab6-31c9b6146a0b" />
-)
+Login & Sign Up
+Login ScreenSign Up<img width="600" src="https://github.com/user-attachments/assets/0b6f5f86-60b2-45bf-afa0-b7090dcbff87" /><img width="600" src="https://github.com/user-attachments/assets/0c747e6d-6d78-4e31-b948-b5ddb66ffd3e" />
+Calendar Views
+Filter PanelFilter Panel (continued)<img width="600" src="https://github.com/user-attachments/assets/de6a1a5a-4177-4772-97a0-4b5a1b8fa750" /><img width="600" src="https://github.com/user-attachments/assets/b9bdeb0d-96db-4c07-88b2-6d7fba61dc6f" />
+Week / Day / Month View Toggle<img width="900" src="https://github.com/user-attachments/assets/5f254ec6-7020-4cbc-8190-5f95bdb5d4e9" />
+Scheduling Features
+Hover TooltipCreate Class Options<img width="600" src="https://github.com/user-attachments/assets/0e768a13-b432-4d83-8ee6-2288a53cb090" /><img width="600" src="https://github.com/user-attachments/assets/72ef1a7c-8358-4e82-b449-6ea5a0ff3915" />
+Create Class (continued)Teacher Credit Hours Dashboard<img width="600" src="https://github.com/user-attachments/assets/a73f9e9e-8367-4f6b-9b58-5f85df759841" /><img width="600" src="https://github.com/user-attachments/assets/be09225e-6417-421e-a7f6-50a9d8f28d17" />
+Account
+Sign Out<img width="900" src="https://github.com/user-attachments/assets/b913ade4-03bd-49df-9e90-1cf5e82b05f1" />
 
 ✨ Features
 
-Weekly Calendar View — visualize the full department schedule day by day
-Course Management — create, edit, and delete course sections
-Instructor Assignment — assign faculty to sections with workload tracking
+Weekly Calendar View — visualize the full department schedule day by day with color-coded nodes per instructor
+Hover Tooltips — hover over any class block to instantly see key details
+Week / Day / Month Toggle — switch between calendar views on the fly
+Filter Panel — filter schedule by instructor, room, or course code
+Course Management — create, edit, and delete course sections with full options
+Instructor Assignment — assign faculty to sections with credit hour tracking
 Room Assignment — assign classrooms with seat capacity validation
 Conflict Detection — automatically prevents instructor and room double-booking
-Schedule Filtering — filter by instructor, room, or course code
 CSV Data Import — seed scheduling data quickly for testing and demos
-Admin Dashboard — manage all scheduled sections from one place
+Auth System — login, sign up, and sign out with secure JWT authentication
 
 
 🛠️ Tech Stack
