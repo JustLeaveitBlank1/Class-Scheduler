@@ -9,8 +9,10 @@ Built as: College Senior Finals Project (Solo)
 
 Add screenshots here — drag images into a GitHub issue to get a URL, then paste below
 
-![Dashboard](your-screenshot-url-here)
-![Calendar View](your-screenshot-url-here)
+![Dashboard](<img width="1916" height="937" alt="Screenshot 2026-06-02 163433" src="https://github.com/user-attachments/assets/24a673fb-9036-4c49-892d-d28c76644ae9" />
+)
+![Calendar View](<img width="1917" height="932" alt="Screenshot 2026-06-02 162727" src="https://github.com/user-attachments/assets/02f6410d-98e2-4a9d-bab6-31c9b6146a0b" />
+)
 
 ✨ Features
 
