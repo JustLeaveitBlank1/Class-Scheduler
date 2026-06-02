@@ -5,34 +5,34 @@ Type: College Senior Finals Project (Solo)
 
 Screenshots
 Login Screen
-Show Image
+[Show Image](https://github.com/user-attachments/assets/0b6f5f86-60b2-45bf-afa0-b7090dcbff87)
 
 Sign Up
-Show Image
+[Show Image](https://github.com/user-attachments/assets/0c747e6d-6d78-4e31-b948-b5ddb66ffd3e)
 
 Sign Out
-Show Image
+[Show Image](https://github.com/user-attachments/assets/b913ade4-03bd-49df-9e90-1cf5e82b05f1)
 
 Calendar — Filter Panel
-Show Image
+[Show Image](https://github.com/user-attachments/assets/de6a1a5a-4177-4772-97a0-4b5a1b8fa750)
 
 Calendar — Filter Panel (continued)
-Show Image
+[Show Image](https://github.com/user-attachments/assets/b9bdeb0d-96db-4c07-88b2-6d7fba61dc6f)
 
 Week / Day / Month View Toggle
-Show Image
+[Show Image](https://github.com/user-attachments/assets/5f254ec6-7020-4cbc-8190-5f95bdb5d4e9)
 
 Hover Tooltip
-Show Image
+[Show Image](https://github.com/user-attachments/assets/0e768a13-b432-4d83-8ee6-2288a53cb090)
 
 Create Class — Options
-Show Image
+[Show Image](https://github.com/user-attachments/assets/72ef1a7c-8358-4e82-b449-6ea5a0ff3915)
 
 Create Class — Day Selection
-Show Image
+[Show Image](https://github.com/user-attachments/assets/a73f9e9e-8367-4f6b-9b58-5f85df759841)
 
 Teacher Credit Hours Dashboard
-Show Image
+[Show Image](https://github.com/user-attachments/assets/be09225e-6417-421e-a7f6-50a9d8f28d17)
 
 Features
 
