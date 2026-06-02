@@ -26,7 +26,7 @@ Hover Tooltip
 [Show Image](https://github.com/user-attachments/assets/0e768a13-b432-4d83-8ee6-2288a53cb090)
 
 Create Class — Options
-[Show Image](https://github.com/user-attachments/assets/72ef1a7c-8358-4e82-b449-6ea5a0ff3915)
+[Show Image](https://github.com/user-attachments/assets/a60f7f26-046b-4cd9-a621-51aae7baf39f)
 
 Create Class — Day Selection
 [Show Image](https://github.com/user-attachments/assets/a73f9e9e-8367-4f6b-9b58-5f85df759841)
