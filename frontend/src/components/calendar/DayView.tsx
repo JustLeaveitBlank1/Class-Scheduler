@@ -1,26 +1,22 @@
 // src/components/calendar/DayView.tsx
 import TimeGutter from "./TimeGutter";
 import DayColumn from "./DayColumn";
+import type { CalendarSection } from "./DayColumn";
 import { isToday } from "../../utils/time";
 
 const dayKeys = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"] as const;
 
-export default function DayView({
-  date,
-  sections,
-}: {
+type Props = {
   date: Date;
-  sections: Array<{
-    id: string;
-    courseId: string;
-    meetingSlotId: string;
-    instructorId: number;
-    roomId: number;
-    seats: number;
-  }>;
-}) {
-  // derive dayKey from the provided date
-  const weekdayShort = new Intl.DateTimeFormat(undefined, { weekday: "short" }).format(date);
+  sections: CalendarSection[];
+  onSectionClick?: (sec: CalendarSection) => void;
+};
+
+export default function DayView({ date, sections, onSectionClick }: Props) {
+  // derive dayKey from date
+  const weekdayShort = new Intl.DateTimeFormat(undefined, {
+    weekday: "short",
+  }).format(date);
   const map: Record<string, (typeof dayKeys)[number]> = {
     Sun: "Sun",
     Mon: "Mon",
@@ -60,11 +56,19 @@ export default function DayView({
         </div>
       </div>
 
-      {/* Scrollable grid area */}
+      {/* Scrollable body */}
       <div className="h-full overflow-auto">
-        <div className="grid h-full pb-6" style={{ gridTemplateColumns: `120px 1fr` }}>
+        <div
+          className="grid h-full pb-6"
+          style={{ gridTemplateColumns: `120px 1fr` }}
+        >
           <TimeGutter />
-          <DayColumn dayKey={key} date={date} sections={sections} />
+          <DayColumn
+            dayKey={key}
+            date={date}
+            sections={sections}
+            onSectionClick={onSectionClick}
+          />
         </div>
       </div>
     </div>

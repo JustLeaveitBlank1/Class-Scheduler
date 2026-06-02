@@ -3,10 +3,15 @@ import { useStore } from "../store";
 
 export default function Filters() {
   const {
-    filters, setMode, setRooms, setInstructors,
+    filters,
+    setMode,
+    setRooms,
+    setInstructors,
     rooms: roomCatalog,
     instructors: instructorCatalog,
-    loading, roomsLoaded, instructorsLoaded
+    loading,
+    roomsLoaded,
+    instructorsLoaded,
   } = useStore();
 
   const toggle = (list: number[], set: (ids: number[]) => void, id: number) => {
@@ -15,21 +20,31 @@ export default function Filters() {
 
   return (
     <div className="flex flex-wrap gap-4 items-center justify-between p-4 border-b">
+      {/* mode switch */}
       <div className="flex gap-2">
         <button
-          className={`px-3 py-1 rounded ${filters.mode === "rooms" ? "bg-black/80 text-white" : "bg-black/10"}`}
+          className={`px-3 py-1 rounded ${
+            filters.mode === "rooms"
+              ? "bg-black/80 text-white"
+              : "bg-black/10"
+          }`}
           onClick={() => setMode("rooms")}
         >
           Rooms
         </button>
         <button
-          className={`px-3 py-1 rounded ${filters.mode === "instructors" ? "bg-black/80 text-white" : "bg-black/10"}`}
+          className={`px-3 py-1 rounded ${
+            filters.mode === "instructors"
+              ? "bg-black/80 text-white"
+              : "bg-black/10"
+          }`}
           onClick={() => setMode("instructors")}
         >
           Instructors
         </button>
       </div>
 
+      {/* chips */}
       <div className="flex flex-wrap gap-3">
         {filters.mode === "rooms" ? (
           <div className="flex gap-2 items-center">
@@ -39,10 +54,12 @@ export default function Filters() {
             {roomCatalog.map((r) => (
               <button
                 key={r.id}
-                className={`px-2 py-1 rounded border ${filters.rooms.includes(r.id) ? "bg-black text-white" : ""}`}
+                className={`px-2 py-1 rounded border ${
+                  filters.rooms.includes(r.id) ? "bg-black text-white" : ""
+                }`}
                 onClick={() => toggle(filters.rooms, setRooms, r.id)}
               >
-                {r.name}
+                {r.room_number}
               </button>
             ))}
             {!loading && roomsLoaded && roomCatalog.length === 0 && (
@@ -52,12 +69,18 @@ export default function Filters() {
         ) : (
           <div className="flex gap-2 items-center">
             <span className="text-sm opacity-80">
-              {loading && !instructorsLoaded ? "Loading instructors…" : "Show instructors:"}
+              {loading && !instructorsLoaded
+                ? "Loading instructors…"
+                : "Show instructors:"}
             </span>
             {instructorCatalog.map((i) => (
               <button
                 key={i.id}
-                className={`px-2 py-1 rounded border ${filters.instructors.includes(i.id) ? "bg-black text-white" : ""}`}
+                className={`px-2 py-1 rounded border ${
+                  filters.instructors.includes(i.id)
+                    ? "bg-black text-white"
+                    : ""
+                }`}
                 onClick={() => toggle(filters.instructors, setInstructors, i.id)}
               >
                 {i.name}

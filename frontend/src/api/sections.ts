@@ -3,23 +3,26 @@ import { api } from "./client";
 import type { Section, SectionCreate, SectionPatch } from "../types";
 
 export const SectionsAPI = {
-  // backend routes are /sections/ with a trailing slash
+  // GET /sections/
   list: () => api<Section[]>("/sections/"),
 
+  // POST /sections/
   create: (payload: SectionCreate) =>
     api<Section>("/sections/", {
       method: "POST",
       body: JSON.stringify(payload),
     }),
 
-  update: (id: string, patch: SectionPatch) =>
-    api<Section>(`/sections/${encodeURIComponent(id)}/`, {
-      method: "PATCH", // partial update
+  // PUT /sections/{id}
+  update: (id: number, patch: SectionPatch) =>
+    api<Section>(`/sections/${encodeURIComponent(String(id))}`, {
+      method: "PUT",
       body: JSON.stringify(patch),
     }),
 
-  remove: (id: string) =>
-    api<void>(`/sections/${encodeURIComponent(id)}/`, {
+  // DELETE /sections/{id}
+  remove: (id: number) =>
+    api<void>(`/sections/${encodeURIComponent(String(id))}`, {
       method: "DELETE",
     }),
 };

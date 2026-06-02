@@ -1,4 +1,5 @@
 // src/api/client.ts
+
 // Accept either env name, default to 127.0.0.1, trim trailing slash.
 const API_BASE = (
   import.meta.env.VITE_API_BASE ??
@@ -19,17 +20,40 @@ export async function api<T>(path: string, init?: RequestInit): Promise<T> {
   });
 
   if (!res.ok) {
-    // Prefer FastAPI {"detail": "..."}
+    let message: string | null = null;
+
+    // 1) Try to read FastAPI-style JSON: {"detail": "..."}
     try {
       const data = await res.json();
-      if (typeof (data as any)?.detail === "string") {
-        throw new Error((data as any).detail);
+      const detail = (data as any)?.detail;
+
+      if (typeof detail === "string") {
+        message = detail;
       }
     } catch {
-      // ignore and fall through to text
+      // ignore JSON parse errors and fall through
     }
-    const text = await res.text().catch(() => "");
-    throw new Error(text || `HTTP ${res.status}`);
+
+    // 2) Friendly overrides for auth endpoints
+    if (!message) {
+      if (res.status === 401 && path.startsWith("/auth/login")) {
+        message = "Incorrect email or password.";
+      } else if (res.status === 400 && path.startsWith("/auth/signup")) {
+        message = "An account with this email already exists.";
+      }
+    }
+
+    // 3) Fallback to text body or generic message
+    if (!message) {
+      const text = await res.text().catch(() => "");
+      if (text && !text.startsWith("HTTP ")) {
+        message = text;
+      } else {
+        message = "Something went wrong while talking to the server.";
+      }
+    }
+
+    throw new Error(message);
   }
 
   if (res.status === 204) return undefined as T;

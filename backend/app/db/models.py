@@ -6,9 +6,10 @@ from sqlalchemy import (
     UniqueConstraint,
     Boolean,
     DateTime,
-    Enum,
+    Enum as SAEnum,
     Text,
     func,
+    Index,
 )
 from sqlalchemy.orm import relationship
 from .database import Base
@@ -41,10 +42,10 @@ class Instructor(Base):
     email = Column(String, unique=True, nullable=False)
     department = Column(String, nullable=True)
 
-    # NEW: target load for the term (credits or contact-hours; pick one canonically)
+    # Target load for the term (credits/contact-hours)
     target_load = Column(Integer, nullable=True)
 
-    # keep your existing fields
+    # Kept from your previous schema
     max_load = Column(Integer, default=15)
     current_load = Column(Integer, default=0)
 
@@ -60,7 +61,7 @@ class Room(Base):
     __tablename__ = "rooms"
 
     id = Column(Integer, primary_key=True, index=True)
-    room_number = Column(String, unique=True, nullable=False)  # matches schemas/seed
+    room_number = Column(String, unique=True, nullable=False)
     capacity = Column(Integer, nullable=False)
     constraints = Column(String)
 
@@ -72,23 +73,7 @@ class Room(Base):
     )
 
 
-class MeetingTime(Base):
-    __tablename__ = "meeting_times"
-
-    id = Column(Integer, primary_key=True, index=True)
-    day_of_week = Column(String, nullable=False)   # e.g., "MW" or "TTh"
-    start_time = Column(String, nullable=False)    # "09:30"
-    end_time   = Column(String, nullable=False)    # "10:45"
-
-    sections = relationship(
-        "Section",
-        back_populates="meeting_time",
-        cascade="all, delete-orphan",
-        passive_deletes=True,
-    )
-
-
-# NEW: status enum for sections
+# NEW: status enum for sections (SQLAlchemy)
 class SectionStatus(PyEnum):
     open = "open"
     closed = "closed"
@@ -98,30 +83,33 @@ class Section(Base):
     __tablename__ = "sections"
 
     id = Column(Integer, primary_key=True, index=True)
+
     course_id = Column(Integer, ForeignKey("courses.id", ondelete="CASCADE"), nullable=False)
     instructor_id = Column(Integer, ForeignKey("instructors.id", ondelete="CASCADE"), nullable=False)
     room_id = Column(Integer, ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False)
-    meeting_time_id = Column(Integer, ForeignKey("meeting_times.id", ondelete="CASCADE"), nullable=False)
 
-    # existing
-    seats = Column(Integer, nullable=False, default=0)
+    # Free-form meeting window (store as naive or tz-aware depending on your DB/driver config)
+    start = Column(DateTime(timezone=True), nullable=False)
+    end   = Column(DateTime(timezone=True), nullable=False)
 
-    # NEW fields
-    status = Column(Enum(SectionStatus, name="section_status"), nullable=True)  # default handled in API
-    section_number = Column(String(16), nullable=True)  # e.g., "-1", "-2"
+    # Credits assigned to this section (used for instructor load)
+    credits = Column(Integer, nullable=False, default=3)
+
+    status = Column(SAEnum(SectionStatus, name="section_status"), nullable=True)
+    section_number = Column(String(16), nullable=True)  # e.g., "-1"
     notes = Column(Text, nullable=True)
     deleted_at = Column(DateTime(timezone=True), nullable=True)  # soft delete
 
+    # Helpful indexes (cannot express overlap as a DB constraint, we’ll enforce in API)
     __table_args__ = (
-        UniqueConstraint("room_id", "meeting_time_id", name="uq_room_time"),
-        UniqueConstraint("instructor_id", "meeting_time_id", name="uq_instructor_time"),
         UniqueConstraint("course_id", "section_number", name="uq_course_section_number"),
+        Index("ix_sections_room_time", "room_id", "start", "end"),
+        Index("ix_sections_instructor_time", "instructor_id", "start", "end"),
     )
 
     course = relationship("Course", back_populates="sections")
     instructor = relationship("Instructor", back_populates="sections")
     room = relationship("Room", back_populates="sections")
-    meeting_time = relationship("MeetingTime", back_populates="sections")
 
     conflicts = relationship(
         "Conflict",
@@ -136,7 +124,7 @@ class Conflict(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     section_id = Column(Integer, ForeignKey("sections.id", ondelete="CASCADE"), nullable=False)
-    conflict_type = Column(String, nullable=False)
+    conflict_type = Column(String, nullable=False)  # e.g., "room_overlap", "instructor_overlap"
     description = Column(String)
 
     section = relationship("Section", back_populates="conflicts")

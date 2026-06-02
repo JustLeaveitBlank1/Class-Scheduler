@@ -1,32 +1,28 @@
+// src/components/calendar/WeekView.tsx
 import { isToday } from "../../utils/time";
 import TimeGutter from "./TimeGutter";
 import DayColumn from "./DayColumn";
+import type { CalendarSection } from "./DayColumn";
+
+type WeekDay = { key: string; label: string; date: Date };
+
+type Props = {
+  weekDays: WeekDay[];
+  sections: CalendarSection[];
+  // we no longer support click-to-create in the grid,
+  // only clicking existing sections (dots) to edit
+  onSectionClick?: (sec: CalendarSection) => void;
+};
 
 export default function WeekView({
   weekDays,
   sections,
-  onEmptyClick,
-}: {
-  weekDays: { key: string; label: string; date: Date }[];
-  sections: Array<{
-    id: string;
-    courseId: string;
-    meetingSlotId: string;
-    instructorId: number;
-    roomId: number;
-    seats: number;
-  }>;
-  onEmptyClick?: (info: {
-    date: Date;
-    pct: number;
-    clientX: number;
-    clientY: number;
-  }) => void;
-}) {
+  onSectionClick,
+}: Props) {
   return (
     <div className="border rounded-lg bg-white overflow-hidden h-full">
       <div className="h-full overflow-auto">
-        {/* Header */}
+        {/* Header row */}
         <div
           className="grid sticky top-0 bg-white z-10 border-b justify-items-center"
           style={{ gridTemplateColumns: `120px repeat(${weekDays.length}, 1fr)` }}
@@ -53,7 +49,7 @@ export default function WeekView({
           })}
         </div>
 
-        {/* Grid (pb-6 so 11 PM isn’t clipped) */}
+        {/* Body grid */}
         <div
           className="grid h-full pb-6"
           style={{ gridTemplateColumns: `120px repeat(${weekDays.length}, 1fr)` }}
@@ -65,7 +61,7 @@ export default function WeekView({
               dayKey={d.key as any}
               date={d.date}
               sections={sections}
-              onEmptyClick={onEmptyClick}
+              onSectionClick={onSectionClick}
             />
           ))}
         </div>

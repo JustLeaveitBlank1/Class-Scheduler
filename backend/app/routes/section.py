@@ -32,6 +32,9 @@ def calendar_events(
 ):
     """
     Returns simple calendar events for the selected resource(s).
+
+    NOTE: After the schema change, sections now have free-form start/end times
+    and credits (no MeetingTime table). This endpoint returns those fields.
     Example: /sections/calendar/events?resource=room&ids=10&ids=11
     """
     q = (
@@ -39,16 +42,15 @@ def calendar_events(
         .join(models.Course)
         .join(models.Instructor)
         .join(models.Room)
-        .join(models.MeetingTime)
     )
+
     if resource == "room" and ids:
-        q = q.filter(models.Section.room_id.in__(ids))
+        q = q.filter(models.Section.room_id.in_(ids))
     if resource == "instructor" and ids:
-        q = q.filter(models.Section.instructor_id.in__(ids))
+        q = q.filter(models.Section.instructor_id.in_(ids))
 
     items: List[dict] = []
     for s in q.all():
-        mt = s.meeting_time
         room_label = getattr(s.room, "room_number", None) or getattr(s.room, "name", "")
         items.append(
             {
@@ -56,10 +58,11 @@ def calendar_events(
                 "title": f"{s.course.code} - {getattr(s.course, 'name', '')}".strip(" -"),
                 "sub": f"{s.instructor.name} • {room_label}",
                 "resource": f"{resource}:{getattr(s, resource).id}",
-                "day_of_week": mt.day_of_week,      # e.g., "MW", "TH"
-                "start_time": str(mt.start_time),   # "11:00" or "11:00:00"
-                "end_time": str(mt.end_time),       # "12:15" or "12:15:00"
-                "seats": s.seats,
+                # We no longer have MeetingTime; we expose the raw start/end and credits.
+                "day_of_week": "",  # placeholder for future expansion
+                "start_time": str(s.start),  # e.g. "09:30:00"
+                "end_time": str(s.end),      # e.g. "10:45:00"
+                "credits": s.credits,
             }
         )
     return items
@@ -81,22 +84,24 @@ def _map_integrity_error_to_msg(e: IntegrityError) -> str:
 
     if not constraint:
         text = str(orig or e)
-        # Match both your current names and possible future ones
+        # Match both current and older constraint names
         for name in (
-            "uq_room_time",                # your current model names
-            "uq_instructor_time",
-            "uq_course_section_number",    # if you add section_number uniqueness
-            "uq_sections_room_time",       # older variants some teams used
+            "uq_room_start_end",          # new
+            "uq_instructor_start_end",    # new
+            "uq_room_time",               # legacy
+            "uq_instructor_time",         # legacy
+            "uq_course_section_number",
+            "uq_sections_room_time",
             "uq_sections_instructor_time",
         ):
             if name in text:
                 constraint = name
                 break
 
-    if constraint in ("uq_room_time", "uq_sections_room_time"):
-        return "Room is already scheduled at that meeting time."
-    if constraint in ("uq_instructor_time", "uq_sections_instructor_time"):
-        return "Instructor is already scheduled at that meeting time."
+    if constraint in ("uq_room_start_end", "uq_room_time", "uq_sections_room_time"):
+        return "Room is already scheduled at that time."
+    if constraint in ("uq_instructor_start_end", "uq_instructor_time", "uq_sections_instructor_time"):
+        return "Instructor is already scheduled at that time."
     if constraint == "uq_course_section_number":
         return "This course already has that section number."
     return "Unique constraint violated."
@@ -105,12 +110,14 @@ def _map_integrity_error_to_msg(e: IntegrityError) -> str:
 def _map_value_error_to_http(e: ValueError) -> HTTPException:
     msg = str(e)
     low = msg.lower()
-    if ("does not exist" in low
+    if (
+        "does not exist" in low
         or "non-negative" in low
         or "exceed room capacity" in low
         or "already booked" in low
         or "already scheduled" in low
-        or "section number" in low):
+        or "section number" in low
+    ):
         return HTTPException(status_code=400, detail=msg)
     return HTTPException(status_code=409, detail=msg)
 

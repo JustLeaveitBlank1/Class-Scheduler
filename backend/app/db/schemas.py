@@ -1,6 +1,7 @@
 from typing import Optional
 from pydantic import BaseModel, EmailStr, ConfigDict
 from enum import Enum
+from datetime import datetime
 
 # ===================== Courses =====================
 class CourseBase(BaseModel):
@@ -26,7 +27,7 @@ class InstructorBase(BaseModel):
     email: EmailStr
     current_load: Optional[int] = 0
     department: Optional[str] = None
-    # NEW
+    # Target load for the term (credits or contact-hours, whichever you decide to use)
     target_load: Optional[int] = None
 
 class InstructorCreate(InstructorBase): ...
@@ -38,22 +39,6 @@ class InstructorUpdate(BaseModel):
     target_load: Optional[int] = None
 
 class InstructorRead(InstructorBase):
-    id: int
-    model_config = ConfigDict(from_attributes=True)
-
-# ===================== Meeting Times =====================
-class MeetingTimeBase(BaseModel):
-    day_of_week: str
-    start_time: str
-    end_time: str
-
-class MeetingTimeCreate(MeetingTimeBase): ...
-class MeetingTimeUpdate(BaseModel):
-    day_of_week: Optional[str] = None
-    start_time: Optional[str] = None
-    end_time: Optional[str] = None
-
-class MeetingTimeRead(MeetingTimeBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
 
@@ -80,9 +65,11 @@ class SectionBase(BaseModel):
     course_id: int
     instructor_id: int
     room_id: int
-    meeting_time_id: int
-    seats: Optional[int] = None
-    # NEW
+    # Free-form scheduling (local timezone of the server unless you store tz-aware)
+    start: datetime
+    end: datetime
+    credits: int = 3
+
     status: Optional[SectionStatus] = SectionStatus.open
     section_number: Optional[str] = None
     notes: Optional[str] = None
@@ -92,8 +79,9 @@ class SectionUpdate(BaseModel):
     course_id: Optional[int] = None
     instructor_id: Optional[int] = None
     room_id: Optional[int] = None
-    meeting_time_id: Optional[int] = None
-    seats: Optional[int] = None
+    start: Optional[datetime] = None
+    end: Optional[datetime] = None
+    credits: Optional[int] = None
     status: Optional[SectionStatus] = None
     section_number: Optional[str] = None
     notes: Optional[str] = None
@@ -104,7 +92,7 @@ class SectionRead(SectionBase):
 
 class ConflictBase(BaseModel):
     section_id: int
-    conflict_type: str
+    conflict_type: str  # e.g., "room_overlap" | "instructor_overlap"
     description: Optional[str] = None
 
 class ConflictCreate(ConflictBase): ...
